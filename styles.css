@@ -162,6 +162,16 @@ main {
   margin: 0.45rem 0;
 }
 
+.steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  counter-reset: none;
+}
+
+.steps li {
+  margin: 0.55rem 0;
+}
+
 .meta {
   color: var(--muted);
   margin: 1rem 0 0;
@@ -212,7 +222,6 @@ main {
   font-size: 0.95rem;
 }
 
-/* Shared with terms/privacy pages */
 h1 {
   margin: 0 0 0.35rem;
   font-size: 1.85rem;
