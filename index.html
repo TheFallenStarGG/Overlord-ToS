@@ -4,13 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Overlord — Discord Bot</title>
-  <meta name="description" content="OverLorder is a Discord bot for economy, games, events, and server entertainment." />
+  <meta name="description" content="The Overlord is a Discord bot for economy, games, events, and server entertainment." />
+  <meta property="og:title" content="The Overlord — Discord Bot" />
+  <meta property="og:description" content="Economy, games, and world events for your Discord server." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#c9a227" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <a class="brand" href="index.html">OverLorder</a>
+      <a class="brand" href="index.html">The Overlord</a>
       <nav>
         <a class="active" href="index.html">Home</a>
         <a href="terms.html">Terms</a>
@@ -33,10 +37,20 @@
         <a class="btn btn-secondary" href="https://discord.gg/YOUR_SUPPORT_INVITE">Support server</a>
       </div>
       <p class="meta tight">
-        By inviting or using The Overlord you agree to the
+        Commands start with <code>!!</code> — try <code>!!help</code> after inviting.
+        By using The Overlord you agree to the
         <a href="terms.html">Terms of Service</a> and acknowledge the
         <a href="privacy.html">Privacy Policy</a>.
       </p>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Getting started</h2>
+      <ol class="steps">
+        <li>Invite the bot with the button above (Manage Server permission required to add bots).</li>
+        <li>In any channel the bot can see, run <code>!!help</code>.</li>
+        <li>Optional: set an announcements channel with <code>!!events-channel #channel</code> (needs Manage Server).</li>
+      </ol>
     </section>
 
     <section class="card">
@@ -63,9 +77,7 @@
         <li>Add Reactions</li>
       </ul>
       <p class="meta">
-        Prefix commands also need the <strong>Message Content Intent</strong> enabled
-        for the bot application (that is configured by the bot owner in the Discord
-        Developer Portal, not by the invite).
+        Prefix commands need the <strong>Message Content Intent</strong> (already enabled by the bot owner in the Discord Developer Portal).
         Setting an events channel with <code>!!events-channel</code> requires
         <strong>Manage Server</strong> for the member running the command — not for the bot.
       </p>
@@ -74,9 +86,10 @@
     <section class="card">
       <h2 class="section-title">Support &amp; contact</h2>
       <ul class="feature-list">
-        <li>Support server: <a href="https://discord.gg/YOUR_SUPPORT_INVITE">discord.gg/YOUR_SUPPORT_INVITE</a></li>
+        <li>Support server: <a href="https://discord.gg/YOUR_SUPPORT_INVITE">discord.gg/YOUR_SUPPORT_INVITE</a> (coming soon if the link is still a placeholder)</li>
         <li>Discord: <strong>TheFallenStarGG</strong></li>
-        <li>Source: <a href="https://github.com/TheFallenStarGG/OverLorder-Bot" target="_blank" rel="noopener">GitHub — OverLorder-Bot</a></li>
+        <li>Email: <a href="mailto:DarkstarGaming2326@proton.me">DarkstarGaming2326@proton.me</a></li>
+        <li>Source: <a href="https://github.com/TheFallenStarGG/OverLorder-Bot" target="_blank" rel="noopener">GitHub — bot source code</a></li>
       </ul>
       <p class="meta">
         For Terms questions or data deletion requests, use the contact details on the
@@ -102,6 +115,7 @@
         © 2026 The Overlord ·
         <a href="terms.html">Terms</a> ·
         <a href="privacy.html">Privacy</a> ·
+        <a href="https://github.com/TheFallenStarGG/OverLorder-Bot" target="_blank" rel="noopener">Source</a> ·
         Not affiliated with Discord Inc.
       </p>
     </div>
