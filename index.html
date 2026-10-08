@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OverLorder — Discord Bot</title>
-  <meta name="description" content="OverLorder Discord bot — Terms of Service and Privacy Policy." />
+  <title>The Overlord — Discord Bot</title>
+  <meta name="description" content="OverLorder is a Discord bot for economy, games, events, and server entertainment." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,38 +12,98 @@
     <div class="wrap">
       <a class="brand" href="index.html">OverLorder</a>
       <nav>
+        <a class="active" href="index.html">Home</a>
         <a href="terms.html">Terms</a>
         <a href="privacy.html">Privacy</a>
         <a href="https://github.com/TheFallenStarGG/OverLorder-Bot" target="_blank" rel="noopener">GitHub</a>
-        <!-- <a class="btn" href="YOUR_BOT_INVITE_URL">Invite</a> -->
+        <a class="btn" href="https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=85056&scope=bot%20applications.commands">Invite</a>
       </nav>
     </div>
   </header>
 
   <main class="wrap">
-    <section class="hero">
-      <h1>OverLorder</h1>
-      <p>
-        A Discord bot for economy, games, events, and server entertainment.
-        By using the bot, you agree to the Terms of Service and acknowledge the Privacy Policy.
+    <section class="hero card">
+      <h1>The Overlord</h1>
+      <p class="lead">
+        A Discord bot for virtual economy, games, world events, and server entertainment.
+        Free to use. Built for communities that want something to play with — not just another utility bot.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-lg" href="https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=85056&scope=bot%20applications.commands">Invite to Discord</a>
+        <a class="btn btn-secondary" href="https://discord.gg/YOUR_SUPPORT_INVITE">Support server</a>
+      </div>
+      <p class="meta tight">
+        By inviting or using The Overlord you agree to the
+        <a href="terms.html">Terms of Service</a> and acknowledge the
+        <a href="privacy.html">Privacy Policy</a>.
       </p>
     </section>
 
-    <div class="links">
+    <section class="card">
+      <h2 class="section-title">Features</h2>
+      <ul class="feature-list">
+        <li><strong>Economy</strong> — coins, work, dailies, trading, and gambling-style mini-games</li>
+        <li><strong>Games</strong> — Wordle, duels, board games, ranked play, and more</li>
+        <li><strong>World events</strong> — Gazette, bosses, decrees, and server announcements</li>
+        <li><strong>Progression</strong> — inventory, pets, combat loadouts, and related systems</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Permissions</h2>
+      <p>
+        The invite requests only what the bot needs to function. It does
+        <strong>not</strong> ask for Administrator.
+      </p>
+      <ul class="feature-list">
+        <li>View Channel</li>
+        <li>Send Messages</li>
+        <li>Embed Links</li>
+        <li>Read Message History</li>
+        <li>Add Reactions</li>
+      </ul>
+      <p class="meta">
+        Prefix commands also need the <strong>Message Content Intent</strong> enabled
+        for the bot application (that is configured by the bot owner in the Discord
+        Developer Portal, not by the invite).
+        Setting an events channel with <code>!!events-channel</code> requires
+        <strong>Manage Server</strong> for the member running the command — not for the bot.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Support &amp; contact</h2>
+      <ul class="feature-list">
+        <li>Support server: <a href="https://discord.gg/YOUR_SUPPORT_INVITE">discord.gg/YOUR_SUPPORT_INVITE</a></li>
+        <li>Discord: <strong>TheFallenStarGG</strong></li>
+        <li>Source: <a href="https://github.com/TheFallenStarGG/OverLorder-Bot" target="_blank" rel="noopener">GitHub — OverLorder-Bot</a></li>
+      </ul>
+      <p class="meta">
+        For Terms questions or data deletion requests, use the contact details on the
+        <a href="privacy.html">Privacy Policy</a> page.
+      </p>
+    </section>
+
+    <section class="links">
       <a class="link-card" href="terms.html">
         <h2>Terms of Service</h2>
-        <p>Rules for using OverLorder, virtual currency, acceptable use, and liability.</p>
+        <p>Rules for using The Overlord, virtual currency, acceptable use, and liability.</p>
       </a>
       <a class="link-card" href="privacy.html">
         <h2>Privacy Policy</h2>
         <p>What data we store, why we store it, how long we keep it, and how to request deletion.</p>
       </a>
-    </div>
+    </section>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>© 2026 OverLorder · Not affiliated with Discord Inc.</p>
+      <p>
+        © 2026 The Overlord ·
+        <a href="terms.html">Terms</a> ·
+        <a href="privacy.html">Privacy</a> ·
+        Not affiliated with Discord Inc.
+      </p>
     </div>
   </footer>
 </body>
