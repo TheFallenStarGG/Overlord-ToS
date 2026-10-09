@@ -17,7 +17,7 @@
         <a href="terms.html">Terms</a>
         <a class="active" href="privacy.html">Privacy</a>
         <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">GitHub</a>
-        <a class="btn" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=85056&scope=bot%20applications.commands">Invite</a>
+        <a class="btn" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Invite</a>
       </nav>
     </div>
   </header>
@@ -25,7 +25,7 @@
   <main class="wrap">
     <article class="card">
       <h1>Privacy Policy</h1>
-      <p class="meta">Last updated: October 7, 2026</p>
+      <p class="meta">Last updated: October 8, 2026</p>
 
       <p>
         This Privacy Policy explains what information The Overlord (“the Bot”) collects,
@@ -47,7 +47,9 @@
       <h2>2. Information we collect</h2>
       <p>
         We collect only what is needed to run the Bot. We do <strong>not</strong> ask for
-        email addresses, phone numbers, or real names through the Bot.
+        email addresses, phone numbers, or real names through the Bot’s normal gameplay
+        commands. If you contact us by email or send feedback/report text, you may choose
+        to include extra details yourself.
       </p>
 
       <h2>2.1 From Discord</h2>
@@ -55,30 +57,59 @@
       <ul>
         <li>Discord user ID</li>
         <li>Discord server (guild) ID and channel IDs needed for features you use</li>
-        <li>Message content when you run a command or when a feature must read a message to work (for example, a game guess)</li>
+        <li>Role IDs when a server links a shop title to a Discord role</li>
+        <li>Message content when you run a command or when a feature must read a message to work (for example, a game guess or a confirmation like “yes”)</li>
         <li>Basic public profile fields Discord exposes to bots (such as username), when needed for display</li>
+        <li>Account age signals Discord exposes, used only for abuse prevention (for example, very new accounts moving large amounts of virtual currency)</li>
       </ul>
 
-      <h2>2.2 Gameplay and settings data</h2>
-      <p>To provide economy, games, and server features, we may store:</p>
+      <h2>2.2 Gameplay and progression (per server)</h2>
+      <p>
+        Economy and most progression are stored <strong>separately for each Discord server</strong>.
+        This may include:
+      </p>
       <ul>
-        <li>Virtual balances, inventory, pets, combat stats, and other progression data</li>
-        <li>Game results, cooldowns, rankings, and related timestamps</li>
-        <li>Server settings (for example, which channel receives events)</li>
-        <li>Feature flags or preferences tied to a server or user ID</li>
-      </ul>
-
-      <h2>2.3 Logs</h2>
-      <p>We may keep operational logs, such as:</p>
-      <ul>
-        <li>Errors, crashes, and diagnostic messages</li>
-        <li>Limited command or event logs used for moderation, abuse prevention, or debugging</li>
+        <li>Virtual balances, inventory, pets, combat stats, quests, prestige, and other progression</li>
+        <li>Game results, cooldowns, rankings, seasons, and related timestamps</li>
+        <li>Stocks, companies, muscle, weather, world events, wars/alliances, and similar feature state</li>
+        <li>Lottery, tournament, and leaderboard-related data</li>
       </ul>
       <p>
-        Logs are for operating the Bot. They are not used to build advertising profiles.
+        Virtual currency and items have no real-world monetary value. Some features may also
+        show aggregated or cross-server rankings where the Bot explicitly offers a global leaderboard.
       </p>
 
-      <h2>2.4 What we do not intentionally collect</h2>
+      <h2>2.3 Server settings (configured by admins)</h2>
+      <p>When server staff use setup commands, we may store:</p>
+      <ul>
+        <li>Channels for events, level-ups, games, reports, or other features</li>
+        <li>Channels or categories marked as ignored (no XP / quieter behavior)</li>
+        <li>Toggles such as gambling or robbing on/off</li>
+        <li>Commands disabled for that server</li>
+        <li>Custom shop titles (name, price, description) and optional linked Discord role IDs</li>
+      </ul>
+
+      <h2>2.4 Reports, feedback, and owner inbox</h2>
+      <p>
+        If you use commands such as report or feedback, we store and deliver the
+        <strong>text you submit</strong>, along with your user ID, approximate time, and
+        server context, to a channel chosen by the Operator so issues can be handled.
+        Do not include passwords, tokens, or sensitive personal data in those messages.
+      </p>
+
+      <h2>2.5 Safety and moderation data</h2>
+      <p>To reduce abuse we may store or process:</p>
+      <ul>
+        <li>Short-term signals about command spam or suspicious coin movement between accounts</li>
+        <li>Blocks of user IDs or server IDs (blacklist), which may include a reason, who applied the block, and when</li>
+        <li>Operational logs (errors, diagnostics, limited command activity) for reliability and security</li>
+      </ul>
+      <p>
+        Logs and short-term abuse signals are for operating and protecting the Bot. They are
+        not used to build advertising profiles.
+      </p>
+
+      <h2>2.6 What we do not intentionally collect</h2>
       <ul>
         <li>Payment card details (the Bot does not process real-money payments)</li>
         <li>Precise GPS location</li>
@@ -88,9 +119,11 @@
       <h2>3. How we use information</h2>
       <p>We use the information above to:</p>
       <ul>
-        <li>Run commands, games, economy, and server features</li>
-        <li>Remember progress and server settings</li>
-        <li>Prevent abuse, spam, exploits, and fraud</li>
+        <li>Run commands, games, economy, events, and server features</li>
+        <li>Remember progress and per-server settings</li>
+        <li>Apply optional Discord roles when a custom title is linked to a role and purchased or equipped</li>
+        <li>Prevent spam, exploits, farming abuse, and fraud</li>
+        <li>Handle reports and feedback</li>
         <li>Debug problems and improve reliability</li>
         <li>Respond to support or data requests</li>
         <li>Comply with law where required</li>
@@ -127,14 +160,14 @@
 
       <h2>6. Retention</h2>
       <ul>
-        <li>Gameplay and economy data is kept while needed to provide the service, or until deleted as described below</li>
-        <li>Server settings are kept while the Bot remains in the server, or until cleared</li>
-        <li>Logs are kept only as long as reasonably useful for operations, security, or dispute handling</li>
+        <li>Gameplay and economy data for a server is kept while the Bot is used there, until deleted as described below</li>
+        <li>Server settings are kept while relevant, or until cleared or the server data is wiped</li>
+        <li>If the Bot is <strong>removed from a server</strong>, we schedule deletion of that server’s stored Bot data after a retention period of about <strong>30 days</strong> (unless needed longer for security, abuse handling, or legal reasons)</li>
+        <li>Server admins can request an immediate wipe with the Bot’s data-deletion command (subject to confirmation and permissions)</li>
+        <li>Moderation blocks may remain until removed by the Operator</li>
+        <li>Logs and short-term abuse signals are kept only as long as reasonably useful for operations, security, or dispute handling</li>
+        <li>Report/feedback content is kept as long as needed to handle the submission</li>
       </ul>
-      <p>
-        We may delete or anonymize data sooner if the Bot is discontinued, a server removes
-        the Bot, or a valid deletion request is completed.
-      </p>
 
       <h2>7. Sharing</h2>
       <p>We share data only when necessary:</p>
@@ -143,18 +176,23 @@
         <li>When required by law, legal process, or to protect rights, safety, or security</li>
         <li>If the Bot project is transferred, data may move with it under similar protections</li>
       </ul>
-      <p>Other server members may see public Bot output in Discord (for example, game results or leaderboard posts).</p>
+      <p>
+        Other server members may see public Bot output in Discord (for example, game results,
+        leaderboards, or event posts). Linked Discord roles are visible according to that
+        server’s role settings.
+      </p>
 
       <h2>8. Your choices and data deletion</h2>
       <ul>
         <li><strong>Stop using the Bot:</strong> do not run commands; server owners can remove the Bot</li>
-        <li><strong>Request deletion:</strong> contact us with your Discord user ID (and server ID if the request is about server settings). We will process reasonable requests to delete or anonymize stored Bot data, subject to backups, security logs, and legal obligations</li>
-        <li><strong>Access / correction:</strong> because most data is tied to Discord IDs and game state, contact us if you need help understanding what we store about your ID</li>
+        <li><strong>Server wipe:</strong> admins with Manage Server may use the Bot’s delete-data command to permanently erase that server’s Bot data after confirmation</li>
+        <li><strong>Removal:</strong> removing the Bot starts the automatic retention countdown for that server’s data</li>
+        <li><strong>Request deletion:</strong> contact us with your Discord user ID (and server ID if relevant). We will process reasonable requests to delete or anonymize stored Bot data, subject to backups, security logs, blacklist/abuse records, and legal obligations</li>
+        <li><strong>Access / correction:</strong> most data is tied to Discord IDs and game state; contact us if you need help understanding what we store about your ID</li>
       </ul>
       <p>
-        Removing the Bot from a server stops new collection for that server’s settings, but
-        global user progress (if the economy is shared across servers) may remain until a
-        user-level deletion request is handled.
+        Global or cross-server features (if any) and Operator-side moderation records may
+        not be fully removed by a single server wipe.
       </p>
 
       <h2>9. Security</h2>
@@ -192,7 +230,7 @@
       <ul>
         <li>Discord: <strong>TheFallenStarGG</strong></li>
         <li>Email: <a href="mailto:DarkstarGaming2326@proton.me">DarkstarGaming2326@proton.me</a></li>
-        <li>GitHub: <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">TheFallenStarGG/OverLorder-Bot</a></li>
+        <li>GitHub: <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">TheFallenStarGG/OverLord-Bot</a></li>
       </ul>
       <p>
         Related: <a href="terms.html">Terms of Service</a>
