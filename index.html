@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Overlord — Discord Bot</title>
-  <meta name="description" content="The Overlord is a Discord bot for economy, games, events, and server entertainment." />
-  <meta property="og:title" content="The Overlord — Discord Bot" />
-  <meta property="og:description" content="Economy, games, and world events for your Discord server." />
-  <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#c9a227" />
+  <meta name="description" content="The Overlord brings atmosphere, a light economy, and optional games to your Discord server. Follow the realm or play as much as you want." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -16,95 +12,86 @@
     <div class="wrap">
       <a class="brand" href="index.html">The Overlord</a>
       <nav>
-        <a class="active" href="index.html">Home</a>
+        <a href="index.html">Home</a>
         <a href="terms.html">Terms</a>
         <a href="privacy.html">Privacy</a>
-        <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">GitHub</a>
         <a class="btn" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Invite</a>
       </nav>
     </div>
   </header>
 
   <main class="wrap">
-    <section class="hero card">
-      <h1>The Overlord</h1>
+    <section class="card hero">
+      <h1>Rule the vibe — not a homework RPG</h1>
       <p class="lead">
-        A Discord bot for virtual economy, games, world events, and server entertainment.
-        Free to use. Built for communities that want something to play with — not just another utility bot.
+        The Overlord is a Discord bot for <strong>server atmosphere</strong>, a <strong>light coin economy</strong>,
+        and optional games. Chat, check the realm board, or go all-in on duels and stocks — your choice.
       </p>
       <div class="cta-row">
-        <a class="btn btn-lg" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=85056&scope=bot%20applications.commands">Invite to Discord</a>
-        <a class="btn btn-secondary" href="https://discord.gg/YOUR_SUPPORT_INVITE">Support server</a>
+        <a class="btn btn-lg" href="https://discord.com/oauth2/authorize?client_id=YOUR_APP_ID&permissions=268438528&scope=bot%20applications.commands">Add to Discord</a>
+        <a class="btn btn-lg btn-secondary" href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">Source code</a>
       </div>
-      <p class="meta tight">
-        Commands start with <code>!!</code> — try <code>!!help</code> after inviting.
-        By using The Overlord you agree to the
-        <a href="terms.html">Terms of Service</a> and acknowledge the
-        <a href="privacy.html">Privacy Policy</a>.
-      </p>
+      <p class="meta tight">Prefix <code>!!</code> · Slash commands exist but are experimental · Not affiliated with Discord Inc.</p>
     </section>
 
     <section class="card">
-      <h2 class="section-title">Getting started</h2>
+      <h2 class="section-title">For everyone (including “I don’t play Discord games”)</h2>
+      <ul class="feature-list">
+        <li><strong>Today in the Realm</strong> — one living board (weather, decrees, bounties, headlines). Follow the story without grinding.</li>
+        <li><strong>Chat &amp; status</strong> — talk in the server; optional ranks, titles, and Overlord personality.</li>
+        <li><strong>Casual coins</strong> — daily/work when you feel like it. No mandatory raid schedule.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">If you do want systems</h2>
+      <ul class="feature-list">
+        <li><strong>Economy</strong> — work, shop, trade, fishing, mining, crafting, stocks</li>
+        <li><strong>Games</strong> — duels, bosses, Wordle-style and board games, ranked play</li>
+        <li><strong>World</strong> — weather, decrees, events, bounties, rebellion, Gazette</li>
+        <li><strong>Crafting</strong> — <code>!!craft</code> for food and tools; <code>!!forge</code> for weapons and armor</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Quick start</h2>
       <ol class="steps">
-        <li>Invite the bot with the button above (Manage Server permission required to add bots).</li>
-        <li>In any channel the bot can see, run <code>!!help</code>.</li>
-        <li>Optional: set an announcements channel with <code>!!events-channel #channel</code> (needs Manage Server).</li>
+        <li>Invite the bot (you need <strong>Manage Server</strong>).</li>
+        <li>Run <code>!!help</code> and <code>!!tutorial</code>.</li>
+        <li>Optional: <code>!!settings board #channel</code> for the living realm board.</li>
+        <li>Optional: <code>!!settings events #channel</code> for announcement feed.</li>
       </ol>
     </section>
 
     <section class="card">
-      <h2 class="section-title">Features</h2>
-      <ul class="feature-list">
-        <li><strong>Economy</strong> — coins, work, dailies, trading, and gambling-style mini-games</li>
-        <li><strong>Games</strong> — Wordle, duels, board games, ranked play, and more</li>
-        <li><strong>World events</strong> — Gazette, bosses, decrees, and server announcements</li>
-        <li><strong>Progression</strong> — inventory, pets, combat loadouts, and related systems</li>
-      </ul>
-    </section>
-
-    <section class="card">
       <h2 class="section-title">Permissions</h2>
-      <p>
-        The invite requests only what the bot needs to function. It does
-        <strong>not</strong> ask for Administrator.
-      </p>
+      <p>Invite does <strong>not</strong> request Administrator. Typical needs:</p>
       <ul class="feature-list">
-        <li>View Channel</li>
-        <li>Send Messages</li>
-        <li>Embed Links</li>
-        <li>Read Message History</li>
-        <li>Add Reactions</li>
+        <li>View Channel, Send Messages, Embed Links</li>
+        <li>Read Message History, Add Reactions</li>
+        <li>Manage Roles — only if you use role-linked shop titles</li>
       </ul>
-      <p class="meta">
-        Prefix commands need the <strong>Message Content Intent</strong> (already enabled by the bot owner in the Discord Developer Portal).
-        Setting an events channel with <code>!!events-channel</code> requires
-        <strong>Manage Server</strong> for the member running the command — not for the bot.
-      </p>
+      <p class="meta">Message Content Intent is required for prefix commands (configured by the bot owner).</p>
     </section>
 
     <section class="card">
       <h2 class="section-title">Support &amp; contact</h2>
       <ul class="feature-list">
-        <li>Support server: <a href="https://discord.gg/YOUR_SUPPORT_INVITE">discord.gg/YOUR_SUPPORT_INVITE</a> (coming soon if the link is still a placeholder)</li>
+        <li>Support server: <em>coming soon</em> (link when ready)</li>
         <li>Discord: <strong>TheFallenStarGG</strong></li>
         <li>Email: <a href="mailto:DarkstarGaming2326@proton.me">DarkstarGaming2326@proton.me</a></li>
-        <li>Source: <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">GitHub — bot source code</a></li>
+        <li>Source: <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">GitHub</a></li>
       </ul>
-      <p class="meta">
-        For Terms questions or data deletion requests, use the contact details on the
-        <a href="privacy.html">Privacy Policy</a> page.
-      </p>
     </section>
 
     <section class="links">
       <a class="link-card" href="terms.html">
         <h2>Terms of Service</h2>
-        <p>Rules for using The Overlord, virtual currency, acceptable use, and liability.</p>
+        <p>Rules for using the bot, virtual currency, and acceptable use.</p>
       </a>
       <a class="link-card" href="privacy.html">
         <h2>Privacy Policy</h2>
-        <p>What data we store, why we store it, how long we keep it, and how to request deletion.</p>
+        <p>What data is stored, why, retention, and how to request deletion.</p>
       </a>
     </section>
   </main>
