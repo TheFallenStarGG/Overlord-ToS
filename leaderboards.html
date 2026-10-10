@@ -33,7 +33,7 @@
       <p class="eyebrow">Live standings</p>
       <h1>Leaderboards</h1>
       <p class="lead">
-        The richest, the most active, and the most competitive. Only servers whose admins turned it on are listed,
+        The richest, the most active, and the most competitive. Every server is listed unless its admins opt out,
         and anyone can hide themselves with <code>!!webhide</code>.
       </p>
       <div class="tabs" role="tablist" aria-label="Leaderboards">
@@ -103,7 +103,7 @@
         return [
           el('h2', { class: 'section-title', text: 'Top servers' }),
           el('p', { class: 'section-sub', text: 'A server\'s score is the combined coins of its 5 richest players. A server needs 3 players with 100+ coins to be ranked.' }),
-          list(data.servers, 'No servers are listed yet. Admins can add theirs with !!settings website on.', (s, i) =>
+          list(data.servers, 'No servers are listed yet.', (s, i) =>
             row(i, s.name, fmt(s.players) + ' players · ' + fmt(s.members) + ' members', fmt(s.score) + ' 🪙', s.icon)),
         ];
       }
@@ -128,7 +128,7 @@
       function render() {
         tabButtons.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
         const body = tab === 'servers' ? serversPanel() : tab === 'players' ? playersPanel() : seasonPanel();
-        panel.replaceChildren(...body, el('p', { class: 'meta', text: 'Names are Discord display names. Not listed? A server admin has to turn it on with !!settings website on. Want out? Run !!webhide in Discord.' }));
+        panel.replaceChildren(...body, el('p', { class: 'meta', text: 'Names are Discord display names. Server admins can remove their server with !!settings website off. Want out personally? Run !!webhide in Discord.' }));
         updated.textContent = 'Updated ' + timeAgo(data.generatedAt) + ' · refreshes about every 15 minutes';
       }
 
