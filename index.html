@@ -2,31 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>The Overlord</title>
   <meta name="description" content="Discord bot with a server economy, weather, events, games, and a living realm board. Prefix !!" />
-  <meta name="theme-color" content="#e0b84a" />
+  <meta name="theme-color" content="#0e0c14" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap">
-      <a class="brand" href="index.html">
-        <span class="brand-mark" aria-hidden="true">♛</span>
-        <span class="brand-text">The Overlord</span>
-      </a>
-      <nav>
-        <a class="active" href="index.html">Home</a>
-        <a href="commands.html">Commands</a>
-        <a href="changelog.html">Changelog</a>
-        <a href="leaderboards.html">Leaderboards</a>
-        <a href="setup.html">Setup</a>
-        <a href="terms.html">Terms</a>
-        <a href="privacy.html">Privacy</a>
-        <a class="btn" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Invite</a>
-      </nav>
-    </div>
-  </header>
+  <script src="data.js"></script>
 
   <main class="wrap">
     <section class="card hero">
@@ -40,12 +23,20 @@
         <a class="btn btn-lg" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Add to server</a>
         <a class="btn btn-lg btn-secondary" href="commands.html">Command list</a>
       </div>
+      <div class="stats">
+        <div class="stat"><b id="st-servers">—</b><span>Servers</span></div>
+        <div class="stat"><b id="st-players">—</b><span>Players</span></div>
+        <div class="stat"><b id="st-commands">—</b><span>Commands</span></div>
+        <div class="stat"><b id="st-status">—</b><span>Status</span></div>
+      </div>
       <p class="meta tight">
         Open source on
         <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">GitHub</a>.
         Slash commands exist but are still rough — <code>!!</code> is the main way to use it.
       </p>
     </section>
+
+    <div id="latest"></div>
 
     <section class="card">
       <h2 class="section-title">What it actually does</h2>
@@ -83,6 +74,11 @@
     </section>
 
     <section class="card">
+      <h2 class="section-title">Explore the site</h2>
+      <ul class="tiles" id="tiles"></ul>
+    </section>
+
+    <section class="card">
       <h2 class="section-title">First five minutes</h2>
       <ol class="steps">
         <li>Invite the bot (you need <strong>Manage Server</strong>).</li>
@@ -96,8 +92,6 @@
     <section class="card">
       <h2 class="section-title">Links</h2>
       <ul class="feature-list">
-        <li><a href="commands.html">Commands</a> — what’s in the bot</li>
-        <li><a href="setup.html">Setup</a> — channels and admin stuff</li>
         <li><a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">Source code</a></li>
         <li><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></li>
         <li>Support server: <a href="https://discord.gg/vZrsPCMHys" target="_blank" rel="noopener">discord.gg/vZrsPCMHys</a></li>
@@ -106,16 +100,50 @@
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap">
-      <p>
-        © 2026 The Overlord ·
-        <a href="commands.html">Commands</a> ·
-        <a href="terms.html">Terms</a> ·
-        <a href="privacy.html">Privacy</a> ·
-        Not affiliated with Discord Inc.
-      </p>
-    </div>
-  </footer>
+  <script>
+    (() => {
+      const { fetchData, fmt, el, rich, botState, pages } = Overlord;
+      const $ = (id) => document.getElementById(id);
+
+      // A tile for every page that exists
+      $('tiles').replaceChildren(...pages().map((p) =>
+        el('li', {}, el('a', { class: 'tile', href: p.href },
+          el('span', { class: 't-icon', 'aria-hidden': 'true', text: p.icon }),
+          el('strong', { text: p.label }),
+          el('small', { text: p.desc })))));
+
+      // Live numbers (each one fills in on its own, and stays "—" if it can't load)
+      fetchData('status.json').then((s) => {
+        const { online } = botState(s);
+        $('st-servers').textContent = fmt(s.servers);
+        $('st-status').textContent = online ? 'Online' : 'Offline';
+        $('st-status').className = online ? 'ok' : 'bad';
+      }).catch(() => {});
+
+      fetchData('leaderboards.json').then((d) => {
+        if (d.totals) $('st-players').textContent = fmt(d.totals.players);
+        if ($('st-servers').textContent === '—' && d.totals) $('st-servers').textContent = fmt(d.totals.servers);
+      }).catch(() => {});
+
+      fetchData('commands.json').then((d) => {
+        $('st-commands').textContent = fmt(d.total);
+      }).catch(() => {});
+
+      // Latest update from the changelog
+      fetchData('changelog.json').then(({ updates }) => {
+        const u = updates[0];
+        if (!u) return;
+        const accent = /^#[0-9a-f]{6}$/i.test(u.color) ? u.color : '#e0b84a';
+        $('latest').replaceChildren(
+          el('section', { class: 'card teaser', style: '--accent:' + accent },
+            el('span', { class: 'log-emoji', 'aria-hidden': 'true', text: u.emoji }),
+            el('div', {},
+              el('p', { class: 'log-date', text: 'Latest update · ' + u.date }),
+              el('h2', { text: u.title }),
+              el('p', {}, rich(u.summary)),
+              el('a', { href: 'changelog.html#update-' + updates.length, text: 'Read the full changelog →' }))));
+      }).catch(() => {});
+    })();
+  </script>
 </body>
 </html>
