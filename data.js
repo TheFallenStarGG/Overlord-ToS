@@ -1,7 +1,7 @@
 // Shared helpers for the changelog and leaderboard pages.
 (function () {
   // The bot keeps these files up to date on the "data" branch of this repo
-  const DATA_BASE = 'https://raw.githubusercontent.com/TheFallenStarGG/Overlord-ToS/data/';
+  const DATA_BASE = 'https://raw.githubusercontent.com/TheFallenStarGG/Overlord-Website/data/';
 
   async function fetchData(file) {
     const res = await fetch(DATA_BASE + file, { cache: 'no-cache' });
