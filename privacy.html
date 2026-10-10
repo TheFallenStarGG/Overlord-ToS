@@ -121,19 +121,26 @@
         <li>Government ID numbers</li>
       </ul>
 
-    <h2>2.7 Public website leaderboards</h2>
+      <h2>2.7 Public website</h2>
       <p>
-        The Bot’s website shows public leaderboards and the Bot’s changelog. Leaderboards include every server
-        that uses the Bot, unless that server’s admins have turned this off (requires the
-        <strong>Manage Server</strong> permission). They show Discord display names or usernames,
-        virtual-currency totals, XP and levels, and server names, icons, and member counts. We do
-        <strong>not</strong> publish user IDs or server IDs on the website. Anyone on the internet can view this
-        page, and search engines or archive services may keep copies.
+        The Bot’s website publishes data from the Bot: the changelog, the command list, a game wiki, a status page,
+        leaderboards, a servers page, and a Server Wars page. The leaderboards, servers page, and wars page include every
+        server that uses the Bot, unless that server’s admins have turned this off (requires the
+        <strong>Manage Server</strong> permission).
       </p>
       <p>
-        You can hide yourself at any time with the Bot’s <code>!!webhide</code> command. Hidden users are left out
-        of every website leaderboard at the next update (about every 15 minutes). Server admins can remove their
-        server with the Bot’s settings command. We cannot remove copies that other sites have already saved.
+        For included servers and users this can show: Discord display names or usernames; virtual-currency totals and
+        net worth; XP, levels, prestige, daily streaks, and jobs worked; duel, boss, and ranked-game statistics; season
+        scores and past season results; server names, icons, and member counts; each server’s top players, war results, and
+        the current ruler and active events of its realm. We do <strong>not</strong> publish user IDs or server IDs on the
+        website; server links use scrambled codes instead. The status page shows the Bot’s uptime, response time, number of
+        servers it is in, and any outages. Anyone on the internet can view these pages, and search engines or archive
+        services may keep copies.
+      </p>
+      <p>
+        You can hide yourself at any time with the Bot’s <code>!!webhide</code> command. Hidden users are left out of every
+        website leaderboard, server page, and past-season result at the next update (about every 15 minutes). Server admins
+        can remove their server with the Bot’s settings command. We cannot remove copies that other sites have already saved.
       </p>
       
       <h2>3. How we use information</h2>
@@ -171,7 +178,7 @@
         <li><strong>Bot hosting provider</strong> — runs the Bot process</li>
         <li><strong>Database provider</strong> (for example, a cloud SQL / libSQL service such as Turso) — stores economy, settings, and related data</li>
         <li><strong>AI API providers</strong> — only when an AI-powered feature is used</li>
-        <li><strong>GitHub</strong> — hosts the website and the public leaderboard and changelog data files it displays</li>
+        <li><strong>GitHub</strong> — hosts the website and the public data files it displays (leaderboards, servers, wars, wiki, commands, status, and changelog)</li>
       </ul>
       <p>
         These providers may process data in different countries. By using the Bot, you
