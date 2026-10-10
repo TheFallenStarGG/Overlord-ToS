@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Stocks — The Overlord</title>
+  <meta name="description" content="Live prices, charts and news from the Realm Stock Exchange." />
+  <meta name="theme-color" content="#e0b84a" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Overlord" />
+  <meta property="og:title" content="Stocks — The Overlord" />
+  <meta property="og:description" content="Live prices, charts and news from the Realm Stock Exchange." />
+  <meta property="og:image" content="https://thefallenstargg.github.io/Overlord-Website/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <script src="data.js"></script>
+
+  <main class="wrap">
+    <section class="card hero compact">
+      <p class="eyebrow">Realm Stock Exchange</p>
+      <h1>Stocks</h1>
+      <p class="lead">Prices move once an hour. Every server has its own market, so the same company can be doing great in one server and badly in another. Play money only.</p>
+      <div class="stats">
+        <div class="stat"><b id="s-count">—</b><span>Companies</span></div>
+        <div class="stat"><b id="s-mood">—</b><span>Market, 48 h</span></div>
+        <div class="stat"><b id="s-top">—</b><span>Top mover</span></div>
+        <div class="stat"><b id="s-next">—</b><span>Next update</span></div>
+      </div>
+    </section>
+
+    <div class="card picker">
+      <label for="server-pick">Market of</label>
+      <select class="select" id="server-pick" aria-label="Server"></select>
+    </div>
+
+    <div id="content">
+      <div class="skeleton block"></div><div class="skeleton block"></div>
+    </div>
+    <noscript><p class="meta">This page needs JavaScript to show the market.</p></noscript>
+  </main>
+
+  <script>
+    (async () => {
+      const { fetchData, el, rich, dateText, duration } = Overlord;
+      const $ = (id) => document.getElementById(id);
+      const NS = 'http://www.w3.org/2000/svg';
+      const GREEN = '#4ade80', RED = '#f87171', FLAT = '#aaa49b';
+
+      const svg = (tag, attrs, ...kids) => {
+        const node = document.createElementNS(NS, tag);
+        for (const [k, v] of Object.entries(attrs || {})) node.setAttribute(k, v);
+        node.append(...kids);
+        return node;
+      };
+      const money = (n) => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const dir = (p) => (p > 0.0005 ? 'up' : p < -0.0005 ? 'down' : 'flat');
+      const pctText = (p) => (p < -0.0005 ? '−' : '+') + (Math.abs(p) * 100).toFixed(1) + '%';
+      const arrow = { up: '▲', down: '▼', flat: '■' };
+      const colorOf = (d) => (d === 'up' ? GREEN : d === 'down' ? RED : FLAT);
+
+      const KEY = 'overlord-stocks-server';
+      const store = {
+        get() { try { return localStorage.getItem(KEY); } catch { return null; } },
+        set(v) { try { localStorage.setItem(KEY, v); } catch { /* storage blocked, that's fine */ } },
+      };
+
+      const state = { data: null, server: null, sym: null, only: false };
+
+      // ---------- Charts ----------
+
+      function spark(history, d) {
+        const w = 104, h = 32, n = history.length;
+        const lo = Math.min(...history), hi = Math.max(...history), span = hi - lo || 1;
+        const pts = history.map((v, i) =>
+          (n < 2 ? w : (i / (n - 1)) * w).toFixed(1) + ',' + (h - 3 - ((v - lo) / span) * (h - 6)).toFixed(1));
+        return svg('svg', { viewBox: '0 0 ' + w + ' ' + h, class: 'spark', 'aria-hidden': 'true' },
+          svg('polyline', { points: pts.join(' '), fill: 'none', stroke: colorOf(d), 'stroke-width': '2', 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+      }
+
+      function chart(st, onPoint) {
+        const h = st.history, n = h.length;
+        const small = matchMedia('(max-width: 639px)').matches;
+        const W = small ? 360 : 720, H = small ? 230 : 300;
+        const L = 58, R = 10, T = 12, B = 26;
+        const lo = Math.min(...h), hi = Math.max(...h);
+        const span = hi - lo || Math.max(hi * 0.02, 1);
+        const min = lo - span * 0.15, max = hi + span * 0.15;
+        const x = (i) => (n < 2 ? (L + W - R) / 2 : L + (i / (n - 1)) * (W - L - R));
+        const y = (v) => T + (1 - (v - min) / (max - min)) * (H - T - B);
+        const color = h[n - 1] >= h[0] ? GREEN : RED;
+
+        const root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'chart', role: 'img', 'aria-label': st.name + ' price over the last ' + (n - 1) + ' hours' });
+        root.append(svg('defs', {}, svg('linearGradient', { id: 'area', x1: '0', y1: '0', x2: '0', y2: '1' },
+          svg('stop', { offset: '0%', 'stop-color': color, 'stop-opacity': '0.32' }),
+          svg('stop', { offset: '100%', 'stop-color': color, 'stop-opacity': '0' }))));
+
+        for (let k = 0; k <= 3; k++) {
+          const v = min + ((max - min) * k) / 3;
+          root.append(
+            svg('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), class: 'grid' }),
+            svg('text', { x: L - 8, y: y(v) + 4, class: 'axis', 'text-anchor': 'end' }, money(v)));
+        }
+        root.append(
+          svg('text', { x: L, y: H - 6, class: 'axis' }, (n - 1) + ' h ago'),
+          svg('text', { x: W - R, y: H - 6, class: 'axis', 'text-anchor': 'end' }, 'now'));
+
+        const pts = h.map((v, i) => x(i).toFixed(1) + ' ' + y(v).toFixed(1));
+        if (n > 1) {
+          root.append(
+            svg('path', { d: 'M' + pts.join(' L') + ' L' + x(n - 1).toFixed(1) + ' ' + (H - B) + ' L' + x(0).toFixed(1) + ' ' + (H - B) + ' Z', fill: 'url(#area)' }),
+            svg('path', { d: 'M' + pts.join(' L'), fill: 'none', stroke: color, 'stroke-width': '2.2', 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+        }
+        root.append(svg('circle', { cx: x(n - 1), cy: y(h[n - 1]), r: '3.5', fill: color }));
+
+        // Hover / drag to read past prices
+        const guide = svg('line', { y1: T, y2: H - B, class: 'guide', visibility: 'hidden' });
+        const dot = svg('circle', { r: '5', fill: color, stroke: '#0e0c14', 'stroke-width': '2', visibility: 'hidden' });
+        const hit = svg('rect', { x: L, y: T, width: W - L - R, height: H - T - B, fill: 'transparent' });
+        const indexAt = (e) => {
+          if (n < 2) return 0;
+          const r = root.getBoundingClientRect();
+          const px = ((e.clientX - r.left) / r.width) * W;
+          return Math.max(0, Math.min(n - 1, Math.round(((px - L) / (W - L - R)) * (n - 1))));
+        };
+        const show = (i) => {
+          const v = i == null ? 'hidden' : 'visible';
+          guide.setAttribute('visibility', v);
+          dot.setAttribute('visibility', v);
+          if (i != null) {
+            guide.setAttribute('x1', x(i)); guide.setAttribute('x2', x(i));
+            dot.setAttribute('cx', x(i)); dot.setAttribute('cy', y(h[i]));
+          }
+          onPoint(i);
+        };
+        hit.addEventListener('pointermove', (e) => show(indexAt(e)));
+        hit.addEventListener('pointerdown', (e) => show(indexAt(e)));
+        hit.addEventListener('pointerleave', () => show(null));
+        hit.addEventListener('pointercancel', () => show(null));
+        root.append(guide, dot, hit);
+        return root;
+      }
+
+      // ---------- Cards ----------
+
+      function detailCard(st) {
+        const d = dir(st.change), n = st.history.length;
+        const read = el('p', { class: 'chart-read' });
+        const showRead = (i) => {
+          if (i == null) { read.textContent = 'Drag across the chart to see past prices'; return; }
+          const age = n - 1 - i;
+          read.textContent = money(st.history[i]) + ' 🪙 · ' + (age === 0 ? 'latest price' : age + ' h ago');
+        };
+        showRead(null);
+
+        const rows = [
+          ['Low (' + (n - 1) + ' h)', money(st.low) + ' 🪙'],
+          ['High (' + (n - 1) + ' h)', money(st.high) + ' 🪙'],
+          ['Risk', st.risk],
+          st.movers ? ['Reacts to', st.movers] : null,
+          ['Trading fee', Math.round((state.data.fee || 0) * 100) + '% when buying and when selling'],
+        ].filter(Boolean);
+
+        return el('section', { class: 'card', id: 'detail' },
+          el('div', { class: 'stock-head' },
+            el('span', { class: 'entry-emoji', 'aria-hidden': 'true', text: st.emoji }),
+            el('div', {},
+              el('h2', { class: 'stock-title', text: st.name }),
+              el('div', { class: 'entry-tags' },
+                el('span', { class: 'pill', text: st.sym }),
+                st.player ? el('span', { class: 'pill warn', text: 'Player company' }) : null)),
+            el('div', { class: 'stock-price' },
+              el('b', { text: money(st.price) + ' 🪙' }),
+              el('span', { class: 'chg ' + d, text: arrow[d] + ' ' + pctText(st.change) + ' · ' + (n - 1) + ' h' }))),
+          read,
+          chart(st, showRead),
+          st.blurb ? el('p', { class: 'entry-desc', text: st.blurb }) : null,
+          el('dl', { class: 'kv' }, rows.flatMap(([k, v]) => [el('dt', { text: k }), el('dd', { text: v })])));
+      }
+
+      function listCard(s, current) {
+        return el('section', { class: 'card' },
+          el('h2', { class: 'section-title' }, 'Market', el('span', { class: 'count', text: s.stocks.length })),
+          el('p', { class: 'section-sub', text: 'Tap a company to see its chart.' }),
+          el('div', { class: 'stock-grid' }, s.stocks.map((st) => {
+            const d = dir(st.change);
+            const btn = el('button', { class: 'stock', type: 'button', 'aria-pressed': String(st.sym === current.sym) },
+              el('span', { class: 'stock-top' },
+                el('span', { class: 'entry-emoji', 'aria-hidden': 'true', text: st.emoji }),
+                el('span', { class: 'stock-name' }, el('strong', { text: st.sym }), el('small', { text: st.name }))),
+              el('span', { class: 'stock-row' },
+                el('span', {}, el('b', { class: 'stock-now', text: money(st.price) }), el('span', { class: 'chg ' + d, text: arrow[d] + ' ' + pctText(st.change) })),
+                spark(st.history, d)));
+            btn.addEventListener('click', () => {
+              state.sym = st.sym;
+              render();
+              $('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            return btn;
+          })));
+      }
+
+      function newsCard(s, current) {
+        const tab = (label, on, fn) => {
+          const b = el('button', { class: 'tab', type: 'button', 'aria-pressed': String(on), text: label });
+          b.addEventListener('click', fn);
+          return b;
+        };
+        const tagged = s.news.some((n) => n.sym);
+        const items = state.only ? s.news.filter((n) => n.sym === current.sym) : s.news;
+        return el('section', { class: 'card' },
+          el('h2', { class: 'section-title', text: '📰 Market news' }),
+          el('p', { class: 'section-sub', text: 'The latest headlines from this server\'s market.' }),
+          tagged ? el('div', { class: 'tabs flush', role: 'group', 'aria-label': 'News filter' },
+            tab('All news', !state.only, () => { state.only = false; render(); }),
+            tab(current.sym + ' only', state.only, () => { state.only = true; render(); })) : null,
+          items.length
+            ? el('div', { class: 'news-list' }, items.map((n) =>
+                el('div', { class: 'news-item' + (n.major ? ' major' : '') },
+                  el('time', { datetime: n.at, text: dateText(n.at) }),
+                  el('p', {}, rich(n.text)))))
+            : el('p', { class: 'lb-empty', text: state.only ? 'No recent news about ' + current.sym + '. Try "All news".' : 'The market has been quiet lately.' }));
+      }
+
+      function stats(s) {
+        $('s-count').textContent = s.stocks.length;
+        const avg = s.stocks.reduce((sum, x) => sum + x.change, 0) / s.stocks.length;
+        const mood = $('s-mood');
+        mood.textContent = arrow[dir(avg)] + ' ' + pctText(avg);
+        mood.className = dir(avg) === 'up' ? 'ok' : dir(avg) === 'down' ? 'bad' : '';
+        const top = [...s.stocks].sort((a, b) => Math.abs(b.change) - Math.abs(a.change))[0];
+        $('s-top').textContent = top.sym + ' ' + pctText(top.change);
+        const left = (new Date(s.nextTick) - Date.now()) / 60000;
+        $('s-next').textContent = left > 1 ? duration(left) : 'Any moment';
+      }
+
+      function render() {
+        const s = state.server;
+        const st = s.stocks.find((x) => x.sym === state.sym) || s.stocks[0];
+        state.sym = st.sym;
+        history.replaceState(null, '', '#' + s.slug + '/' + st.sym);
+        stats(s);
+        $('content').replaceChildren(detailCard(st), listCard(s, st), newsCard(s, st));
+      }
+
+      // ---------- Start ----------
+
+      try {
+        state.data = await fetchData('stocks.json');
+        const servers = state.data.servers || [];
+        if (!servers.length) {
+          $('content').replaceChildren(el('div', { class: 'card' },
+            el('p', { class: 'meta', text: 'No markets are listed yet. Check back soon.' })));
+          return;
+        }
+
+        const [slug, sym] = location.hash.slice(1).split('/');
+        state.server = servers.find((x) => x.slug === slug) || servers.find((x) => x.slug === store.get()) || servers[0];
+        state.sym = sym ? sym.toUpperCase() : null;
+
+        const pick = $('server-pick');
+        pick.replaceChildren(...servers.map((x) => el('option', { value: x.slug, text: x.name })));
+        pick.value = state.server.slug;
+        pick.addEventListener('change', () => {
+          state.server = servers.find((x) => x.slug === pick.value) || servers[0];
+          state.sym = null;
+          state.only = false;
+          store.set(state.server.slug);
+          render();
+        });
+
+        matchMedia('(max-width: 639px)').addEventListener('change', () => render());
+        render();
+      } catch (err) {
+        $('content').replaceChildren(el('div', { class: 'card' },
+          el('p', { class: 'meta', text: 'The market could not be loaded right now. Try again in a minute.' })));
+      }
+    })();
+  </script>
+</body>
+</html>
