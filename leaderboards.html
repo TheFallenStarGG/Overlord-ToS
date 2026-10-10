@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Overlord — Leaderboards</title>
+  <meta name="description" content="Season, server, and all-time player leaderboards for The Overlord Discord bot." />
+  <meta name="theme-color" content="#e0b84a" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">♛</span>
+        <span class="brand-text">The Overlord</span>
+      </a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="commands.html">Commands</a>
+        <a href="changelog.html">Changelog</a>
+        <a class="active" href="leaderboards.html">Leaderboards</a>
+        <a href="setup.html">Setup</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a class="btn" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Invite</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card hero">
+      <p class="eyebrow">Live standings</p>
+      <h1>Leaderboards</h1>
+      <p class="lead">
+        The richest, the most active, and the most competitive. Only servers whose admins turned it on are listed,
+        and anyone can hide themselves with <code>!!webhide</code>.
+      </p>
+      <div class="tabs" role="tablist" aria-label="Leaderboards">
+        <button class="tab" type="button" role="tab" data-tab="season">🏆 Season</button>
+        <button class="tab" type="button" role="tab" data-tab="servers">🏰 Servers</button>
+        <button class="tab" type="button" role="tab" data-tab="players">👤 Players</button>
+      </div>
+      <p class="meta tight" id="updated"></p>
+    </section>
+
+    <section class="card" id="panel" aria-live="polite"><p class="meta">Loading…</p></section>
+    <noscript><p class="meta">This page needs JavaScript to show the leaderboards.</p></noscript>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>
+        © 2026 The Overlord ·
+        <a href="commands.html">Commands</a> ·
+        <a href="terms.html">Terms</a> ·
+        <a href="privacy.html">Privacy</a> ·
+        Not affiliated with Discord Inc.
+      </p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script>
+    (async () => {
+      const { fetchData, el, fmt, timeAgo } = Overlord;
+      const MEDALS = ['🥇', '🥈', '🥉'];
+      const panel = document.getElementById('panel');
+      const updated = document.getElementById('updated');
+      const tabButtons = [...document.querySelectorAll('.tab[data-tab]')];
+
+      let data = null;
+      let tab = ['season', 'servers', 'players'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'season';
+      let metric = 'coins';
+
+      const iconOk = (url) => typeof url === 'string' && url.startsWith('https://cdn.discordapp.com/');
+
+      function row(i, name, sub, value, icon) {
+        return el('div', { class: 'lb-row' + (i < 3 ? ' top' : '') },
+          el('span', { class: 'lb-rank', text: MEDALS[i] || String(i + 1) }),
+          el('span', { class: 'lb-who' },
+            iconOk(icon) ? el('img', { src: icon, alt: '', width: 30, height: 30, loading: 'lazy' }) : null,
+            el('span', { class: 'lb-name' },
+              el('span', { class: 'lb-title', text: name }),
+              sub ? el('small', { text: sub }) : null)),
+          el('span', { class: 'lb-value', text: value }));
+      }
+
+      const list = (items, empty, build) =>
+        items && items.length ? el('div', { class: 'lb-list' }, items.map(build)) : el('p', { class: 'lb-empty', text: empty });
+
+      function seasonPanel() {
+        const s = data.season;
+        const ends = new Date(s.endsAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' });
+        return [
+          el('h2', { class: 'section-title', text: 'Season ' + s.number }),
+          el('p', { class: 'section-sub', text: 'Ends ' + ends + ' (UTC). Season score is coins earned minus coins lost or spent, added up across every listed server. Coins are never reset.' }),
+          list(s.players, 'Nobody has scored this season yet.', (p, i) => row(i, p.name, null, fmt(p.score) + ' 🪙')),
+        ];
+      }
+
+      function serversPanel() {
+        return [
+          el('h2', { class: 'section-title', text: 'Top servers' }),
+          el('p', { class: 'section-sub', text: 'A server\'s score is the combined coins of its 5 richest players. A server needs 3 players with 100+ coins to be ranked.' }),
+          list(data.servers, 'No servers are listed yet. Admins can add theirs with !!settings website on.', (s, i) =>
+            row(i, s.name, fmt(s.players) + ' players · ' + fmt(s.members) + ' members', fmt(s.score) + ' 🪙', s.icon)),
+        ];
+      }
+
+      function playersPanel() {
+        const pick = (key, label) => {
+          const b = el('button', { class: 'tab', type: 'button', 'aria-pressed': String(metric === key), text: label });
+          b.addEventListener('click', () => { metric = key; render(); });
+          return b;
+        };
+        const rows = metric === 'coins'
+          ? list(data.players.coins, 'Nobody is listed yet.', (p, i) => row(i, p.name, null, fmt(p.value) + ' 🪙'))
+          : list(data.players.xp, 'Nobody is listed yet.', (p, i) => row(i, p.name, fmt(p.value) + ' XP', 'Lv ' + p.level));
+        return [
+          el('h2', { class: 'section-title', text: 'All-time players' }),
+          el('p', { class: 'section-sub', text: 'Each player\'s coins and XP added up across every listed server.' }),
+          el('div', { class: 'tabs small' }, pick('coins', '💰 Richest'), pick('xp', '📈 Top chatters')),
+          rows,
+        ];
+      }
+
+      function render() {
+        tabButtons.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+        const body = tab === 'servers' ? serversPanel() : tab === 'players' ? playersPanel() : seasonPanel();
+        panel.replaceChildren(...body, el('p', { class: 'meta', text: 'Names are Discord display names. Not listed? A server admin has to turn it on with !!settings website on. Want out? Run !!webhide in Discord.' }));
+        updated.textContent = 'Updated ' + timeAgo(data.generatedAt) + ' · refreshes about every 15 minutes';
+      }
+
+      async function load() {
+        try {
+          data = await fetchData('leaderboards.json');
+          render();
+        } catch (err) {
+          if (!data) panel.replaceChildren(el('p', { class: 'lb-empty', text: 'The leaderboards are not available yet. Please check back soon.' }));
+        }
+      }
+
+      tabButtons.forEach((b) => b.addEventListener('click', () => {
+        tab = b.dataset.tab;
+        history.replaceState(null, '', '#' + tab);
+        if (data) render();
+      }));
+
+      await load();
+      setInterval(load, 5 * 60 * 1000);
+    })();
+  </script>
+</body>
+</html>
