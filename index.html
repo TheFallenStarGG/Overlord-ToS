@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Overlord — Discord Bot</title>
-  <meta name="description" content="The Overlord brings atmosphere, a light economy, and optional games to your Discord server. Follow the realm or play as much as you want." />
+  <title>The Overlord</title>
+  <meta name="description" content="Discord bot with a server economy, weather, events, games, and a living realm board. Prefix !!" />
   <meta name="theme-color" content="#e0b84a" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -17,9 +17,10 @@
       </a>
       <nav>
         <a class="active" href="index.html">Home</a>
+        <a href="commands.html">Commands</a>
+        <a href="setup.html">Setup</a>
         <a href="terms.html">Terms</a>
         <a href="privacy.html">Privacy</a>
-        <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">GitHub</a>
         <a class="btn" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Invite</a>
       </nav>
     </div>
@@ -27,116 +28,78 @@
 
   <main class="wrap">
     <section class="card hero">
-      <p class="eyebrow">Discord bot · Prefix !!</p>
-      <h1>Rule the vibe — not a homework RPG</h1>
+      <p class="eyebrow">Discord bot · commands start with !!</p>
+      <h1>The Overlord</h1>
       <p class="lead">
-        Atmosphere for your server, a light coin economy, and optional games.
-        Chat and follow the realm board — or dive into duels, stocks, and crafting. Your pace.
+        A bot that runs a little economy and a shared “realm” in your server — weather, events, bounties, stocks, the usual chaos.
+        You can ignore most of it and still check the board, or dig into crafting, duels, and the market.
       </p>
       <div class="cta-row">
-        <a class="btn btn-lg" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Add to Discord</a>
-        <a class="btn btn-lg btn-secondary" href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">Source code</a>
+        <a class="btn btn-lg" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Add to server</a>
+        <a class="btn btn-lg btn-secondary" href="commands.html">Command list</a>
       </div>
-      <p class="meta tight">Slash commands exist but are experimental · Not affiliated with Discord Inc.</p>
+      <p class="meta tight">
+        Open source on
+        <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">GitHub</a>.
+        Slash commands exist but are still rough — <code>!!</code> is the main way to use it.
+      </p>
     </section>
 
     <section class="card">
-      <h2 class="section-title">Built for the whole server</h2>
-      <p class="section-sub">Including people who “don’t play games on Discord.”</p>
-      <ul class="feature-grid three">
+      <h2 class="section-title">What it actually does</h2>
+      <ul class="feature-grid">
         <li class="feature-card">
           <div class="feature-icon">🏰</div>
-          <h3>Today in the Realm</h3>
-          <p>One living board: weather, decrees, bounties, headlines. Follow the story without grinding.</p>
-        </li>
-        <li class="feature-card">
-          <div class="feature-icon">💬</div>
-          <h3>Chat &amp; status</h3>
-          <p>Ranks, titles, and an Overlord with opinions. Presence without a raid calendar.</p>
+          <h3>Realm board</h3>
+          <p>
+            One message that updates itself: weather, active events, bounty, throne, market news.
+            Set it with <code>!!settings board #channel</code>. Or just run <code>!!board</code> whenever.
+          </p>
         </li>
         <li class="feature-card">
           <div class="feature-icon">🪙</div>
-          <h3>Casual coins</h3>
-          <p>Daily and work when you feel like it. No mandatory chores to “keep up.”</p>
-        </li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">Systems when you want them</h2>
-      <p class="section-sub">Depth is optional — it’s there if you chase it.</p>
-      <ul class="feature-grid">
-        <li class="feature-card">
-          <div class="feature-icon">💰</div>
-          <h3>Economy</h3>
-          <p>Work, shop, trade, fish, mine, craft, and a stock market with real risk.</p>
+          <h3>Coins &amp; stuff</h3>
+          <p>
+            Daily, work, shop, fish, mine, craft, trade. Stocks exist and can go bankrupt — don’t put in what you can’t lose.
+          </p>
         </li>
         <li class="feature-card">
           <div class="feature-icon">⚔️</div>
-          <h3>Games &amp; combat</h3>
-          <p>Duels, bosses, Wordle-style and board games, ranked play, loadouts.</p>
+          <h3>Combat &amp; games</h3>
+          <p>
+            Duels, bosses, forge gear, a few minigames. Optional. Nobody has to participate.
+          </p>
         </li>
         <li class="feature-card">
-          <div class="feature-icon">🌍</div>
-          <h3>Living world</h3>
-          <p>Weather, decrees, events, bounties, rebellion, and the daily Gazette.</p>
-        </li>
-        <li class="feature-card">
-          <div class="feature-icon">🧪</div>
-          <h3>Crafting</h3>
-          <p><code>!!craft</code> for food and tools · <code>!!forge</code> for weapons and armor.</p>
+          <div class="feature-icon">📜</div>
+          <h3>Server events</h3>
+          <p>
+            Decrees, weather, bounties, rebellion meter, a daily Gazette. Feed goes to a channel you pick under settings.
+          </p>
         </li>
       </ul>
     </section>
 
     <section class="card">
-      <h2 class="section-title">Quick start</h2>
+      <h2 class="section-title">First five minutes</h2>
       <ol class="steps">
         <li>Invite the bot (you need <strong>Manage Server</strong>).</li>
-        <li>Run <code>!!help</code> and <code>!!tutorial</code>.</li>
-        <li>Optional: <code>!!settings board #channel</code> for the living realm board.</li>
-        <li>Optional: <code>!!settings events #channel</code> for the announcement feed.</li>
+        <li>Type <code>!!help</code> in a channel it can see.</li>
+        <li>Admins: <code>!!settings</code> for events channel, level-ups, realm board, etc.</li>
+        <li><code>!!tutorial</code> if you want the in-bot walkthrough.</li>
       </ol>
+      <p class="meta">More detail on the <a href="setup.html">Setup</a> page.</p>
     </section>
 
     <section class="card">
-      <h2 class="section-title">Permissions</h2>
-      <p class="section-sub" style="margin-bottom: 0.5rem;">
-        The invite does <strong>not</strong> request Administrator.
-      </p>
-      <div class="perm-row">
-        <span class="perm">View Channel</span>
-        <span class="perm">Send Messages</span>
-        <span class="perm">Embed Links</span>
-        <span class="perm">Read Message History</span>
-        <span class="perm">Add Reactions</span>
-        <span class="perm">Manage Roles (optional)</span>
-      </div>
-      <p class="meta">
-        Message Content Intent is required for prefix commands (set by the bot owner).
-        Manage Roles is only needed for role-linked shop titles.
-      </p>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">Support &amp; contact</h2>
+      <h2 class="section-title">Links</h2>
       <ul class="feature-list">
-        <li>Support server: <em>coming soon</em></li>
-        <li>Discord: <strong>TheFallenStarGG</strong></li>
-        <li>Email: <a href="mailto:DarkstarGaming2326@proton.me">DarkstarGaming2326@proton.me</a></li>
-        <li>Source: <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">GitHub — OverLord-Bot</a></li>
+        <li><a href="commands.html">Commands</a> — what’s in the bot</li>
+        <li><a href="setup.html">Setup</a> — channels and admin stuff</li>
+        <li><a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">Source code</a></li>
+        <li><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></li>
+        <li>Contact: Discord <strong>TheFallenStarGG</strong> · <a href="mailto:DarkstarGaming2326@proton.me">email</a></li>
       </ul>
-    </section>
-
-    <section class="links">
-      <a class="link-card" href="terms.html">
-        <h2>Terms of Service</h2>
-        <p>Rules for using the bot, virtual currency, and acceptable use.</p>
-      </a>
-      <a class="link-card" href="privacy.html">
-        <h2>Privacy Policy</h2>
-        <p>What data is stored, why, retention, and how to request deletion.</p>
-      </a>
     </section>
   </main>
 
@@ -144,9 +107,9 @@
     <div class="wrap">
       <p>
         © 2026 The Overlord ·
+        <a href="commands.html">Commands</a> ·
         <a href="terms.html">Terms</a> ·
         <a href="privacy.html">Privacy</a> ·
-        <a href="https://github.com/TheFallenStarGG/OverLord-Bot" target="_blank" rel="noopener">Source</a> ·
         Not affiliated with Discord Inc.
       </p>
     </div>
