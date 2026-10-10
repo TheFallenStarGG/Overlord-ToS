@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Status — The Overlord</title>
+  <meta name="description" content="Is The Overlord online? Live status and the last 7 days of uptime." />
+  <meta name="theme-color" content="#0e0c14" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <script src="data.js"></script>
+
+  <main class="wrap">
+    <section class="card hero compact">
+      <p class="eyebrow">Live status</p>
+      <div class="status-card">
+        <span class="status-dot" id="dot"></span>
+        <div>
+          <h1 class="status-title" id="headline" style="-webkit-text-fill-color:var(--text);background:none">Checking…</h1>
+          <p class="status-sub" id="sub">Asking the bot how it's doing.</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="s-ping">—</b><span>Ping</span></div>
+        <div class="stat"><b id="s-up">—</b><span>Up for</span></div>
+        <div class="stat"><b id="s-servers">—</b><span>Servers</span></div>
+        <div class="stat"><b id="s-restart">—</b><span>Last restart</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Last 7 days</h2>
+      <p class="section-sub" id="week-sub">Uptime per day (UTC).</p>
+      <div class="bars" id="bars"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Outages</h2>
+      <p class="section-sub" id="out-sub">Anything that took the bot offline in the past week.</p>
+      <div id="incidents"></div>
+    </section>
+
+    <p class="note">
+      The bot checks in here every 10 minutes. If it goes down it can't update this page, so it shows as offline
+      after about 25 minutes of silence. Short restarts under 3 minutes aren't counted as outages.
+      Trouble? Ask in the <a href="https://discord.gg/vZrsPCMHys" target="_blank" rel="noopener">support server</a>.
+    </p>
+    <noscript><p class="meta">This page needs JavaScript to show the status.</p></noscript>
+  </main>
+
+  <script>
+    (() => {
+      const { fetchData, fmt, el, timeAgo, dateText, duration, botState } = Overlord;
+      const $ = (id) => document.getElementById(id);
+      const KIND = { offline: 'The bot was offline', discord: 'Lost connection to Discord' };
+      const grade = (u) => (u == null ? 'none' : u >= 99.5 ? 'ok' : u >= 95 ? 'warn' : 'bad');
+      const weekday = (date) => new Date(date + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' });
+
+      function draw(s) {
+        const { online } = botState(s);
+        $('dot').className = 'status-dot ' + (online ? 'ok' : 'bad');
+        $('headline').textContent = online ? 'The Overlord is online' : "The Overlord isn't responding";
+        $('sub').textContent = online
+          ? 'Last checked ' + timeAgo(s.checkedAt) + '. This page refreshes by itself.'
+          : 'The last sign of life was ' + timeAgo(s.checkedAt) + '. It may be restarting, or Discord may be having problems.';
+
+        const upMins = ((online ? Date.now() : new Date(s.checkedAt).getTime()) - new Date(s.startedAt).getTime()) / 60000;
+        $('s-ping').textContent = online ? s.pingMs + ' ms' : '—';
+        $('s-up').textContent = duration(upMins);
+        $('s-servers').textContent = fmt(s.servers);
+        $('s-restart').textContent = dateText(s.startedAt);
+
+        // Seven little bars
+        $('bars').replaceChildren(...s.days.map((d) => {
+          const pct = d.uptime == null ? '–' : d.uptime === 100 ? '100%' : d.uptime.toFixed(1) + '%';
+          const label = d.date + ': ' + (d.uptime == null ? 'no data yet' : pct + ' uptime, ' + d.downMinutes + ' min down');
+          return el('div', { class: 'bar-day' },
+            el('div', { class: 'bar-fill ' + grade(d.uptime), role: 'img', title: label, 'aria-label': label }),
+            el('small', { text: weekday(d.date) }),
+            el('small', { class: 'bar-pct', text: pct }));
+        }));
+
+        const tracked = s.days.filter((d) => d.uptime != null);
+        const since = new Date(s.trackingSince);
+        const startedRecently = Date.now() - since.getTime() < 7 * 86400000;
+        $('week-sub').textContent = (tracked.length
+          ? (tracked.reduce((sum, d) => sum + d.uptime, 0) / tracked.length).toFixed(2) + '% average uptime. '
+          : '') + (startedRecently ? 'Tracking began ' + dateText(s.trackingSince) + '.' : 'Uptime per day (UTC).');
+
+        // Outages
+        $('out-sub').textContent = s.incidents.length
+          ? s.incidents.length + (s.incidents.length === 1 ? ' outage' : ' outages') + ' in the past 7 days.'
+          : 'No outages' + (startedRecently ? ' since tracking began. 🎉' : ' in the past 7 days. 🎉');
+        $('incidents').replaceChildren(...s.incidents.map((i) =>
+          el('div', { class: 'incident ' + i.kind },
+            el('strong', { text: KIND[i.kind] || 'Outage' }),
+            el('span', { text: dateText(i.start) + ' · ' + duration(i.minutes) }))));
+      }
+
+      async function load() {
+        try {
+          draw(await fetchData('status.json'));
+        } catch {
+          $('dot').className = 'status-dot';
+          $('headline').textContent = 'Status unavailable';
+          $('sub').textContent = 'The status file could not be loaded right now. Try again in a minute.';
+        }
+      }
+
+      load();
+      setInterval(load, 120000);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+    })();
+  </script>
+</body>
+</html>
