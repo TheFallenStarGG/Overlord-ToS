@@ -9,8 +9,8 @@
   const ONLINE_WITHIN_MIN = 25; // the bot checks in about every 10 minutes
 
   // Pages that don't exist yet stay out of the menu. Delete a name from this list once you've added that page.
-  const PENDING = ['wiki.html', 'servers.html', 'wars.html'];
-
+  const PENDING = [];
+  
   // [file, label, icon, short description]
   const NAV = [
     ['commands.html', 'Commands', '📖', 'Every command, searchable'],
@@ -201,6 +201,28 @@
     else placeFooter();
   }
 
-  window.Overlord = { fetchData, fmt, el, rich, timeAgo, duration, dateText, botState, toast, copy, pages, INVITE, SUPPORT };
+  const medal = (i) => ['🥇', '🥈', '🥉'][i] || String(i + 1);
+
+  // A round server icon (shows the first letter until the picture loads, or if there is none)
+  function avatar(server, size = 40) {
+    const letter = (Array.from((server.name || '').trim())[0] || '?').toUpperCase();
+    const box = el('span', {
+      class: 'avatar',
+      style: 'width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * 0.45) + 'px',
+      'aria-hidden': 'true',
+      text: letter,
+    });
+    if (server.icon) {
+      const img = new Image();
+      img.alt = '';
+      img.width = size;
+      img.height = size;
+      img.addEventListener('load', () => box.replaceChildren(img));
+      img.src = server.icon;
+    }
+    return box;
+  }
+
+  window.Overlord = { fetchData, fmt, el, rich, timeAgo, duration, dateText, botState, toast, copy, pages, avatar, medal, INVITE, SUPPORT };
   mountLayout();
 })();
