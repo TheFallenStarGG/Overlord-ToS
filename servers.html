@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Servers — The Overlord</title>
+  <meta name="description" content="Servers that use The Overlord: rankings, top players, wars and realm status." />
+  <meta name="theme-color" content="#0e0c14" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <script src="data.js"></script>
+
+  <main class="wrap">
+    <section class="card hero compact">
+      <p class="eyebrow">Community</p>
+      <h1>Servers</h1>
+      <p class="lead" id="lead">Servers that use the bot. Tap one to see its top players, war progress and realm.</p>
+      <p class="meta tight">
+        Admins can remove their server from this page with the bot's settings command. No Discord IDs are published here.
+      </p>
+    </section>
+
+    <div class="toolbar">
+      <input class="search" id="q" type="search" placeholder="Search servers…" autocomplete="off" aria-label="Search servers" />
+      <div class="chips" id="sorts" role="group" aria-label="Sort by"></div>
+    </div>
+
+    <div id="list">
+      <div class="skeleton block"></div><div class="skeleton block"></div><div class="skeleton block"></div>
+    </div>
+    <noscript><p class="meta">This page needs JavaScript to show servers.</p></noscript>
+  </main>
+
+  <script>
+    (async () => {
+      const { fetchData, fmt, el, avatar, medal, duration } = Overlord;
+      const $ = (id) => document.getElementById(id);
+      const SORTS = {
+        score: ['🏆 Score', (a, b) => b.score - a.score],
+        members: ['👥 Members', (a, b) => b.members - a.members],
+        season: ['📅 Season', (a, b) => b.season.score - a.season.score],
+        war: ['⚔️ War', (a, b) => b.war.score - a.war.score],
+      };
+      let servers = [];
+      let rules = null;
+      let sortBy = 'score';
+      const rank = new Map();
+      let openedFromHash = false;
+
+      const plural = (n, word) => fmt(n) + ' ' + word + (n === 1 ? '' : 's');
+      const block = (title, ...kids) => el('div', { class: 'srv-block' }, el('h3', { text: title }), ...kids);
+      const progress = (frac) =>
+        el('div', { class: 'progress' }, el('span', { style: 'width:' + Math.round(Math.min(1, Math.max(0, frac)) * 100) + '%' }));
+      const mini = (items, value, sub) =>
+        items.length
+          ? el('div', { class: 'lb-list mini' }, items.map((r, i) =>
+              el('div', { class: 'lb-row' },
+                el('span', { class: 'lb-rank', text: medal(i) }),
+                el('span', { class: 'lb-name' }, el('span', { class: 'lb-title', text: r.name }), sub ? el('small', { text: sub(r) }) : null),
+                el('span', { class: 'lb-value', text: value(r) }))))
+          : el('p', { text: 'Nobody yet.' });
+
+      function card(s) {
+        const place = rank.get(s.slug);
+        const w = s.war;
+        const r = s.realm;
+        const need = rules && w.players < rules.minPlayers
+          ? ' It needs ' + rules.minPlayers + ' players with ' + fmt(rules.minProfit) + '+ profit to be ranked.'
+          : '';
+        const events = r.active.map((a) => ({ ...a, ms: Date.parse(a.until) - Date.now() })).filter((a) => a.ms > 0);
+
+        return el('details', { class: 'card server', id: s.slug },
+          el('summary', {},
+            avatar(s, 44),
+            el('span', { class: 'srv-main' },
+              el('strong', { class: 'srv-name', text: s.name }),
+              el('small', { text: fmt(s.members) + ' members · ' + plural(s.players, 'player') })),
+            el('span', { class: 'srv-side' }, el('b', { text: fmt(s.score) }), el('small', { text: 'score' })),
+            el('span', { class: 'chev', 'aria-hidden': 'true' })),
+          el('div', { class: 'srv-body' },
+            el('div', { class: 'srv-badges' },
+              place ? el('span', { class: 'pill ok', text: 'Rank #' + place }) : el('span', { class: 'pill', text: 'Unranked' }),
+              w.wins ? el('span', { class: 'pill warn', text: '🏆 ' + plural(w.wins, 'war win') }) : null,
+              r.raid ? el('span', { class: 'pill bad', text: '👑 The Overlord has descended' }) : null),
+            el('div', { class: 'srv-cols' },
+              block('💰 Richest players', mini(s.richest, (x) => fmt(x.coins) + ' 🪙', (x) => 'Level ' + x.level)),
+              block('📅 This season',
+                el('p', { text: fmt(s.season.score) + ' points from its top players.' }),
+                mini(s.season.top, (x) => fmt(x.score) + ' pts')),
+              block('⚔️ Server War',
+                el('p', { text: fmt(w.score) + ' points this week from ' + plural(w.players, 'player') + '.' + need })),
+              block('🏰 The realm',
+                el('p', { text: r.ruler ? '👑 Ruled by ' + r.ruler : 'The throne is empty.' }),
+                el('p', { text: 'Rebellion: ' + fmt(r.meter) + ' / ' + fmt(r.goal) }),
+                progress(r.goal ? r.meter / r.goal : 0),
+                events.length
+                  ? el('div', { class: 'perm-row' }, events.map((e) =>
+                      el('span', { class: 'pill', text: e.emoji + ' ' + e.name + ' · ' + duration(e.ms / 60000) + ' left' })))
+                  : el('p', { text: 'No decree or event is active.' })))));
+      }
+
+      function openFromHash() {
+        if (openedFromHash) return;
+        openedFromHash = true;
+        const id = location.hash.slice(1);
+        const node = id && document.getElementById(id);
+        if (node && node.tagName === 'DETAILS') {
+          node.open = true;
+          node.scrollIntoView({ block: 'start' });
+        }
+      }
+
+      function render() {
+        const q = $('q').value.trim().toLowerCase();
+        const list = servers.filter((s) => !q || s.name.toLowerCase().includes(q)).sort(SORTS[sortBy][1]);
+        $('list').replaceChildren(list.length
+          ? el('div', { class: 'srv-list' }, list.map(card))
+          : el('div', { class: 'card' }, el('p', { class: 'meta', text: servers.length ? 'No server matches “' + q + '”.' : 'No servers are listed yet.' })));
+        openFromHash();
+      }
+
+      function drawSorts() {
+        $('sorts').replaceChildren(...Object.entries(SORTS).map(([key, [label]]) => {
+          const b = el('button', { class: 'tab', type: 'button', 'aria-pressed': String(sortBy === key), text: label });
+          b.addEventListener('click', () => { sortBy = key; drawSorts(); render(); });
+          return b;
+        }));
+      }
+
+      $('q').addEventListener('input', render);
+
+      try {
+        const [data, wars] = await Promise.all([fetchData('servers.json'), fetchData('wars.json').catch(() => null)]);
+        servers = data.servers;
+        rules = wars ? wars.rules : null;
+        servers.filter((s) => s.ranked).sort(SORTS.score[1]).forEach((s, i) => rank.set(s.slug, i + 1));
+        $('lead').textContent = plural(data.listed, 'server') + ' use the bot' +
+          (data.listed > servers.length ? ' (showing the top ' + servers.length + ')' : '') + '. Tap one to see its top players, war progress and realm.';
+        drawSorts();
+        render();
+      } catch (err) {
+        $('list').replaceChildren(el('div', { class: 'card' },
+          el('p', { class: 'meta', text: 'The server list could not be loaded right now. Try again in a minute.' })));
+      }
+    })();
+  </script>
+</body>
+</html>
