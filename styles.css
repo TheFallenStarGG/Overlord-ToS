@@ -1473,3 +1473,274 @@ article.card strong {
     scroll-behavior: auto !important;
   }
   }
+
+/* ============================================================
+   Leaderboards, servers, wars and wiki
+   ============================================================ */
+
+[hidden] {
+  display: none !important;
+}
+
+.tabs.flush {
+  margin: 0 0 0.6rem;
+}
+
+.chips.jump {
+  margin: 0 0 1rem;
+}
+
+.avatar {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  background: linear-gradient(135deg, rgba(124, 92, 191, 0.45), rgba(224, 184, 74, 0.35));
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+}
+
+.avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ranked rows */
+a.lb-row {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.lb-row:hover {
+  background: var(--gold-soft);
+}
+
+.lb-row.r1 {
+  background: linear-gradient(90deg, rgba(240, 192, 64, 0.14), transparent);
+}
+
+.lb-row.r2 {
+  background: linear-gradient(90deg, rgba(200, 205, 215, 0.11), transparent);
+}
+
+.lb-row.r3 {
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.14), transparent);
+}
+
+.lb-row.top .lb-rank {
+  font-size: 1.3rem;
+}
+
+.lb-list.mini .lb-row {
+  grid-template-columns: 1.9rem 1fr auto;
+  padding: 0.45rem 0.1rem;
+  font-size: 0.92rem;
+}
+
+/* servers */
+.srv-list {
+  display: grid;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .srv-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.server {
+  padding: 0;
+  overflow: hidden;
+  scroll-margin-top: 9rem;
+}
+
+.server summary {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.server summary::-webkit-details-marker {
+  display: none;
+}
+
+.srv-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.srv-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.srv-main small,
+.srv-side small {
+  font-size: 0.8rem;
+  color: var(--faint);
+}
+
+.srv-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.srv-side b {
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.chev {
+  flex: none;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin: 0 0.2rem 0.2rem;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.server[open] .chev {
+  margin-bottom: -0.2rem;
+  transform: rotate(-135deg);
+}
+
+.srv-body {
+  padding: 0 1rem 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.srv-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.8rem 0 0.2rem;
+}
+
+.srv-cols {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 760px) {
+  .srv-cols {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.srv-block h3 {
+  margin: 0.4rem 0 0.35rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.srv-block p {
+  margin: 0.25rem 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.progress {
+  height: 0.55rem;
+  margin: 0.35rem 0 0.6rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--violet), var(--gold));
+  border-radius: inherit;
+}
+
+/* wiki */
+.wiki-sec {
+  margin-bottom: 1.8rem;
+  scroll-margin-top: 9rem;
+}
+
+.entries {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr));
+}
+
+.entry {
+  padding: 0.85rem 0.95rem 0.95rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.entry header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.entry h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.entry-emoji {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.entry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+}
+
+.entry-tags .pill {
+  padding: 0.05rem 0.5rem;
+  font-size: 0.72rem;
+}
+
+.entry-desc {
+  margin: 0.5rem 0 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, 7.5rem) 1fr;
+  gap: 0.3rem 0.8rem;
+  margin: 0.65rem 0 0;
+  font-size: 0.88rem;
+}
+
+.kv dt {
+  color: var(--faint);
+}
+
+.kv dd {
+  margin: 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
