@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Server Wars — The Overlord</title>
+  <meta name="description" content="The weekly Server War: which servers are winning, past results and champions." />
+  <meta name="theme-color" content="#0e0c14" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <script src="data.js"></script>
+
+  <main class="wrap">
+    <section class="card hero compact">
+      <p class="eyebrow">Weekly competition</p>
+      <h1>Server Wars</h1>
+      <p class="lead" id="rules">Servers compete every week. The top three win prizes for every player who contributed.</p>
+      <div class="stats">
+        <div class="stat"><b id="w-week">—</b><span>This war</span></div>
+        <div class="stat"><b id="w-ends">—</b><span>Ends in</span></div>
+        <div class="stat"><b id="w-ranked">—</b><span>Ranked servers</span></div>
+        <div class="stat"><b id="w-prize">—</b><span>1st prize each</span></div>
+      </div>
+    </section>
+
+    <div id="content">
+      <div class="skeleton block"></div><div class="skeleton block"></div>
+    </div>
+    <noscript><p class="meta">This page needs JavaScript to show the wars.</p></noscript>
+  </main>
+
+  <script>
+    (async () => {
+      const { fetchData, fmt, el, avatar, medal, duration } = Overlord;
+      const $ = (id) => document.getElementById(id);
+      const weekLabel = (key) => 'Week of ' + new Date(key + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+      const plural = (n, word) => fmt(n) + ' ' + word + (n === 1 ? '' : 's');
+
+      function serverRow(s, i, value, sub) {
+        return el('a', { class: 'lb-row' + (i != null && i < 3 ? ' top r' + (i + 1) : ''), href: 'servers.html#' + s.slug },
+          el('span', { class: 'lb-rank', text: i == null ? '•' : medal(i) }),
+          el('span', { class: 'lb-who' }, avatar(s, 34),
+            el('span', { class: 'lb-name' }, el('span', { class: 'lb-title', text: s.name }), sub ? el('small', { text: sub }) : null)),
+          el('span', { class: 'lb-value', text: value }));
+      }
+
+      const card = (title, sub, ...kids) =>
+        el('section', { class: 'card' }, el('h2', { class: 'section-title', text: title }), sub ? el('p', { class: 'section-sub', text: sub }) : null, ...kids);
+
+      try {
+        const [w, sv] = await Promise.all([fetchData('wars.json'), fetchData('servers.json').catch(() => null)]);
+        const r = w.rules;
+        const prizes = r.prizes.map(fmt).join(' / ');
+
+        $('rules').textContent =
+          'Every week, each server adds up the coin profit of its top ' + r.topPlayers + ' players. A server is ranked once ' + r.minPlayers +
+          ' players have made ' + fmt(r.minProfit) + '+ profit. The top 3 servers pay every contributing player ' + prizes +
+          ' coins. A new war starts every Monday (UTC).';
+        $('w-week').textContent = weekLabel(w.week.key).replace('Week of ', '');
+        const left = (new Date(w.week.endsAt) - Date.now()) / 60000;
+        $('w-ends').textContent = left > 0 ? duration(left) : 'Ending now';
+        $('w-ranked').textContent = fmt(w.standings.length);
+        $('w-prize').textContent = fmt(r.prizes[0]) + ' 🪙';
+
+        const out = [];
+
+        // This week
+        out.push(card('🏆 This week', null,
+          w.standings.length
+            ? el('div', { class: 'lb-list' }, w.standings.map((s, i) => serverRow(s, i, fmt(s.score) + ' pts', plural(s.players, 'player'))))
+            : el('p', { class: 'note', text: 'No server is ranked yet this week. A server needs ' + r.minPlayers + ' players with ' + fmt(r.minProfit) + '+ profit.' })));
+
+        // Servers that are close
+        const ranked = new Set(w.standings.map((s) => s.slug));
+        const warming = sv ? sv.servers.filter((s) => s.war.players > 0 && !ranked.has(s.slug)).sort((a, b) => b.war.score - a.war.score) : [];
+        if (warming.length) {
+          out.push(card('🔥 Warming up', 'Not ranked yet. These servers still need more players to reach ' + fmt(r.minProfit) + '+ profit this week.',
+            el('div', { class: 'lb-list' }, warming.map((s) =>
+              serverRow(s, null, fmt(s.war.score) + ' pts', Math.min(s.war.players, r.minPlayers) + ' of ' + r.minPlayers + ' players')))));
+        }
+
+        // Champions
+        if (w.champions.length) {
+          out.push(card('👑 Champions', 'Servers with the most war wins.',
+            el('div', { class: 'lb-list' }, w.champions.map((s, i) => serverRow(s, i, '🏆 ' + fmt(s.wins), null)))));
+        }
+
+        // Past weeks
+        if (w.history.length) {
+          out.push(el('h2', { class: 'section-title', text: '📜 Past weeks' }));
+          for (const h of w.history) {
+            out.push(card(weekLabel(h.week), null,
+              el('div', { class: 'lb-list' }, h.top.map((s, i) => serverRow(s, i, fmt(s.score) + ' pts', null)))));
+          }
+        }
+
+        $('content').replaceChildren(...out);
+      } catch (err) {
+        $('content').replaceChildren(el('div', { class: 'card' },
+          el('p', { class: 'meta', text: 'The war standings could not be loaded right now. Try again in a minute.' })));
+      }
+    })();
+  </script>
+</body>
+</html>
