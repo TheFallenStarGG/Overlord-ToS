@@ -2,133 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Commands — The Overlord</title>
-  <meta name="description" content="Command list for The Overlord Discord bot (prefix !!)." />
-  <meta name="theme-color" content="#e0b84a" />
+  <meta name="description" content="Every command in The Overlord Discord bot, searchable." />
+  <meta name="theme-color" content="#0e0c14" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap">
-      <a class="brand" href="index.html">
-        <span class="brand-mark" aria-hidden="true">♛</span>
-        <span class="brand-text">The Overlord</span>
-      </a>
-      <nav>
-        <a href="index.html">Home</a>
-        <a class="active" href="commands.html">Commands</a>
-        <a href="changelog.html">Changelog</a>
-        <a href="leaderboards.html">Leaderboards</a>
-        <a href="setup.html">Setup</a>
-        <a href="terms.html">Terms</a>
-        <a href="privacy.html">Privacy</a>
-        <a class="btn" href="https://discord.com/api/oauth2/authorize?client_id=1555446743515144232&permissions=268438528&scope=bot%20applications.commands">Invite</a>
-      </nav>
-    </div>
-  </header>
+  <script src="data.js"></script>
 
   <main class="wrap">
-    <section class="card hero">
-      <p class="eyebrow">Reference</p>
+    <section class="card hero compact">
+      <p class="eyebrow">Command list</p>
       <h1>Commands</h1>
-      <p class="lead">
-        Everything below uses the <code>!!</code> prefix. In Discord, <code>!!help</code> is always more up to date than this page if something just shipped.
+      <p class="lead" id="lead">
+        Every command starts with <code>!!</code>. Tap a command to copy it. This page builds itself from the bot, so it is always up to date.
       </p>
     </section>
 
-    <section class="card">
-      <h2 class="section-title">Economy</h2>
-      <div class="cmd-table">
-        <div><code>!!balance</code> <span>Your coins</span></div>
-        <div><code>!!daily</code> <span>Daily reward</span></div>
-        <div><code>!!work</code> <span>Work for coins</span></div>
-        <div><code>!!career</code> <span>Career / job progress</span></div>
-        <div><code>!!rob</code> <span>Rob someone (if enabled)</span></div>
-        <div><code>!!give</code> <span>Give coins</span></div>
-        <div><code>!!trade</code> <span>Trade with another member</span></div>
-        <div><code>!!leaderboard</code> <span>Top balances</span></div>
-        <div><code>!!rank</code> / <code>!!profile</code> <span>Your rank card</span></div>
-        <div><code>!!prestige</code> <span>Prestige reset path</span></div>
-        <div><code>!!lottery</code> <span>Lottery</span></div>
-        <div><code>!!quests</code> <span>Quests</span></div>
-      </div>
-    </section>
+    <div class="toolbar">
+      <input class="search" id="q" type="search" placeholder="Search commands…" autocomplete="off" aria-label="Search commands" />
+      <div class="chips" id="chips" role="group" aria-label="Categories"></div>
+    </div>
 
-    <section class="card">
-      <h2 class="section-title">Shop, gathering, crafting</h2>
-      <div class="cmd-table">
-        <div><code>!!shop</code> / <code>!!buy</code> <span>Buy items</span></div>
-        <div><code>!!sell</code> <span>Sell fish, ore, crafts</span></div>
-        <div><code>!!inventory</code> / <code>!!use</code> <span>Bag and use items</span></div>
-        <div><code>!!fish</code> / <code>!!mine</code> <span>Gather resources</span></div>
-        <div><code>!!craft</code> <span>Craft food, tools, trinkets</span></div>
-        <div><code>!!forge</code> <span>Weapons and armor</span></div>
-        <div><code>!!pet</code> <span>Pets</span></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">Stocks &amp; world info</h2>
-      <div class="cmd-table">
-        <div><code>!!stocks</code> <span>Market board / news</span></div>
-        <div><code>!!invest</code> / <code>!!cashout</code> <span>Buy and sell shares</span></div>
-        <div><code>!!portfolio</code> <span>Your holdings</span></div>
-        <div><code>!!ipo</code> <span>Player companies</span></div>
-        <div><code>!!forecast</code> <span>Weather</span></div>
-        <div><code>!!board</code> <span>Today in the Realm snapshot</span></div>
-        <div><code>!!gazette</code> <span>Daily paper</span></div>
-        <div><code>!!changelog</code> <span>Bot updates</span></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">Combat &amp; competition</h2>
-      <div class="cmd-table">
-        <div><code>!!duel</code> <span>Fight another player</span></div>
-        <div><code>!!boss</code> <span>Boss fights</span></div>
-        <div><code>!!loadout</code> <span>Gear and class</span></div>
-        <div><code>!!bounty</code> <span>Active mark (if available)</span></div>
-        <div><code>!!rebellion</code> / <code>!!usurper</code> <span>Throne / rebellion</span></div>
-        <div><code>!!ranked</code> / <code>!!tournament</code> <span>Ranked play</span></div>
-        <div><code>!!stats</code> <span>Combat stats</span></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">Games &amp; misc</h2>
-      <div class="cmd-table">
-        <div><code>!!wordle</code> and other game commands</div>
-        <div><code>!!poll</code> <code>!!roll</code> <code>!!flip</code> <code>!!choose</code> <span>Small utilities</span></div>
-        <div><code>!!tutorial</code> <span>In-bot guide</span></div>
-        <div><code>!!invite</code> <span>Bot invite link</span></div>
-        <div><code>!!support</code> <span><a href="https://discord.gg/vZrsPCMHys" target="_blank" rel="noopener">Support server</a></span></div>
-        <div><code>!!report</code> / <code>!!feedback</code> <span>Send feedback to the owner</span></div>
-        <div><code>!!deletedata</code> <span>Request data deletion</span></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">Admin (Manage Server)</h2>
-      <div class="cmd-table">
-        <div><code>!!settings</code> <span>Gambling, rob, channels, command toggles, board</span></div>
-        <div><code>!!events-channel</code> <span>Announcement feed (or via settings)</span></div>
-        <div><code>!!edittitles</code> <span>Custom shop titles / roles</span></div>
-        <div><code>!!reactionroles</code> <span>Reaction role panels</span></div>
-      </div>
-      <p class="meta">Full channel setup notes are on the <a href="setup.html">Setup</a> page.</p>
-    </section>
+    <div id="list">
+      <div class="skeleton block"></div><div class="skeleton block"></div><div class="skeleton block"></div>
+    </div>
+    <noscript><p class="meta">This page needs JavaScript. In Discord, use <code>!!help</code> instead.</p></noscript>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap">
-      <p>
-        © 2026 The Overlord ·
-        <a href="index.html">Home</a> ·
-        <a href="setup.html">Setup</a> ·
-        <a href="terms.html">Terms</a>
-      </p>
-    </div>
-  </footer>
+  <script>
+    (async () => {
+      const { fetchData, el, rich, copy, toast } = Overlord;
+      const list = document.getElementById('list');
+      const chips = document.getElementById('chips');
+      const search = document.getElementById('q');
+      let cats = [];
+      let active = 'all';
+
+      const matches = (c, q) => !q || [c.name, c.usage, c.description, ...c.aliases].join(' ').toLowerCase().includes(q);
+
+      function commandCard(c) {
+        const usage = el('button', { class: 'cmd-usage', type: 'button', title: 'Tap to copy', text: c.usage });
+        usage.addEventListener('click', async () => toast((await copy(c.usage)) ? 'Copied ' + c.usage : 'Could not copy'));
+        return el('article', { class: 'cmd', id: 'cmd-' + c.name.replace(/^!+/, '') },
+          usage,
+          c.description ? el('p', { class: 'cmd-desc' }, rich(c.description)) : null,
+          c.aliases.length ? el('p', { class: 'cmd-alias', text: 'Also: ' + c.aliases.join('  ') }) : null);
+      }
+
+      function render() {
+        const q = search.value.trim().toLowerCase();
+        const blocks = [];
+        for (const cat of cats) {
+          if (active !== 'all' && active !== cat.key) continue;
+          const found = cat.commands.filter((c) => matches(c, q));
+          if (!found.length) continue;
+          blocks.push(el('section', { class: 'cmd-cat' },
+            el('h2', { class: 'section-title' }, cat.emoji + ' ' + cat.title, el('span', { class: 'count', text: String(found.length) })),
+            cat.intro ? el('p', { class: 'section-sub' }, rich(cat.intro)) : null,
+            el('div', { class: 'cmd-list' }, found.map(commandCard))));
+        }
+        list.replaceChildren(...(blocks.length
+          ? blocks
+          : [el('div', { class: 'card' }, el('p', { class: 'meta', text: 'No commands match “' + q + '”.' }))]));
+      }
+
+      function drawChips() {
+        const chip = (key, label) => {
+          const b = el('button', { class: 'tab', type: 'button', 'aria-pressed': String(active === key), text: label });
+          b.addEventListener('click', () => { active = key; drawChips(); render(); });
+          return b;
+        };
+        chips.replaceChildren(chip('all', 'All'), ...cats.map((c) => chip(c.key, c.emoji + ' ' + c.title)));
+      }
+
+      search.addEventListener('input', render);
+
+      try {
+        const data = await fetchData('commands.json');
+        cats = data.categories;
+        document.getElementById('lead').replaceChildren(
+          el('strong', { text: data.total + ' commands. ' }),
+          'Every command starts with ', el('code', { text: '!!' }), '. Tap a command to copy it.');
+        const preset = new URLSearchParams(location.search).get('q');
+        if (preset) search.value = preset;
+        drawChips();
+        render();
+      } catch (err) {
+        list.replaceChildren(el('div', { class: 'card' },
+          el('p', { class: 'meta', text: 'The command list could not be loaded right now. Try again in a minute, or use !!help in Discord.' })));
+      }
+    })();
+  </script>
 </body>
-  </html>
+</html>
