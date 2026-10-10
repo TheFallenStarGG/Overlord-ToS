@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Wiki — The Overlord</title>
+  <meta name="description" content="Items, recipes, pets, classes, bosses, stocks and more in The Overlord, built automatically from the bot." />
+  <meta name="theme-color" content="#0e0c14" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <script src="data.js"></script>
+
+  <main class="wrap">
+    <section class="card hero compact">
+      <p class="eyebrow">Game wiki</p>
+      <h1>Wiki</h1>
+      <p class="lead">
+        Items, recipes, pets, classes, bosses and more. This page is built automatically from the bot's own data,
+        so it always matches the game.
+      </p>
+    </section>
+
+    <div class="toolbar">
+      <input class="search" id="q" type="search" placeholder="Search the wiki…" autocomplete="off" aria-label="Search the wiki" />
+      <div class="chips" id="groups" role="group" aria-label="Topics"></div>
+    </div>
+    <div class="chips jump" id="jump" hidden></div>
+
+    <div id="content">
+      <div class="skeleton block"></div><div class="skeleton block"></div><div class="skeleton block"></div>
+    </div>
+    <noscript><p class="meta">This page needs JavaScript to show the wiki.</p></noscript>
+  </main>
+
+  <script>
+    (async () => {
+      const { fetchData, el, rich } = Overlord;
+      const $ = (id) => document.getElementById(id);
+      let sections = [];
+      let groups = [];
+      let active = '';
+
+      const textOf = (s, e) => [s.title, e.name, e.desc, ...e.tags, ...e.stats.flat()].join(' ').toLowerCase();
+
+      function entryCard(e) {
+        return el('article', { class: 'entry' },
+          el('header', {},
+            el('span', { class: 'entry-emoji', 'aria-hidden': 'true', text: e.emoji }),
+            el('div', {},
+              el('h3', { text: e.name }),
+              e.tags.length ? el('div', { class: 'entry-tags' }, e.tags.map((t) => el('span', { class: 'pill', text: t }))) : null)),
+          e.desc ? el('p', { class: 'entry-desc' }, rich(e.desc)) : null,
+          e.stats.length
+            ? el('dl', { class: 'kv' }, e.stats.flatMap(([label, value]) => [el('dt', { text: label }), el('dd', {}, rich(value))]))
+            : null);
+      }
+
+      function sectionBlock(s, list) {
+        return el('section', { class: 'wiki-sec', id: s.id },
+          el('h2', { class: 'section-title' }, s.emoji + ' ' + s.title, el('span', { class: 'count', text: String(list.length) })),
+          s.intro ? el('p', { class: 'section-sub' }, rich(s.intro)) : null,
+          el('div', { class: 'entries' }, list.map(entryCard)));
+      }
+
+      function render() {
+        const query = $('q').value.trim().toLowerCase();
+
+        $('groups').replaceChildren(...groups.map((g) => {
+          const b = el('button', { class: 'tab', type: 'button', 'aria-pressed': String(!query && g === active), text: g });
+          b.addEventListener('click', () => { active = g; $('q').value = ''; render(); });
+          return b;
+        }));
+
+        const blocks = [];
+        for (const s of sections) {
+          if (!query && s.group !== active) continue;
+          const list = query ? s.entries.filter((e) => textOf(s, e).includes(query)) : s.entries;
+          if (list.length) blocks.push(sectionBlock(s, list));
+        }
+        $('content').replaceChildren(...(blocks.length
+          ? blocks
+          : [el('div', { class: 'card' }, el('p', { class: 'meta', text: 'Nothing matches “' + query + '”.' }))]));
+
+        const inGroup = sections.filter((s) => s.group === active);
+        const jump = $('jump');
+        jump.hidden = Boolean(query) || inGroup.length < 2;
+        jump.replaceChildren(...inGroup.map((s) => {
+          const b = el('button', { class: 'tab', type: 'button', text: s.emoji + ' ' + s.title });
+          b.addEventListener('click', () => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+          return b;
+        }));
+      }
+
+      $('q').addEventListener('input', render);
+
+      try {
+        sections = (await fetchData('wiki.json')).sections;
+        groups = [...new Set(sections.map((s) => s.group))];
+        const target = sections.find((s) => s.id === location.hash.slice(1));
+        active = target ? target.group : groups[0];
+        render();
+        if (target) document.getElementById(target.id)?.scrollIntoView();
+      } catch (err) {
+        $('content').replaceChildren(el('div', { class: 'card' },
+          el('p', { class: 'meta', text: 'The wiki could not be loaded right now. Try again in a minute.' })));
+      }
+    })();
+  </script>
+</body>
+</html>
