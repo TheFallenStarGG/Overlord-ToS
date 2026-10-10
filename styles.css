@@ -557,3 +557,35 @@ article.card strong {
     white-space: nowrap;
   }
   }
+
+/* Command reference rows */
+.cmd-table {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.cmd-table > div {
+  display: grid;
+  grid-template-columns: minmax(8rem, 14rem) 1fr;
+  gap: 0.5rem 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.cmd-table > div:last-child {
+  border-bottom: none;
+}
+
+.cmd-table code {
+  color: #f5e6c8;
+}
+
+@media (max-width: 560px) {
+  .cmd-table > div {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
