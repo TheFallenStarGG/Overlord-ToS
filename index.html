@@ -17,6 +17,13 @@
   <meta name="twitter:card" content="summary_large_image" />
 </head>
 <body>
+  <div id="news-ticker" class="news-ticker" hidden>
+    <div class="news-ticker-label">Live</div>
+    <div class="news-ticker-viewport">
+      <div class="news-ticker-track" id="news-track"></div>
+    </div>
+  </div>
+  
   <script src="data.js"></script>
 
   <main class="wrap">
@@ -127,6 +134,29 @@
         $('st-status').textContent = online ? 'Online' : 'Offline';
         $('st-status').className = online ? 'ok' : 'bad';
       }).catch(() => {});
+
+      // Cross-server news strip (last 24h, max 30 — built by the bot)
+      fetchData('news.json')
+        .then((d) => {
+          const items = Array.isArray(d.items) ? d.items : [];
+          if (!items.length) return;
+
+          const track = $('news-track');
+          const bar = $('news-ticker');
+          if (!track || !bar) return;
+
+          const bits = items.map((it) => {
+            const server = it.server || 'Server';
+            const text = it.text || '';
+            return `【${server}】 ${text}`;
+          });
+
+          // Duplicate the line so the scroll can loop smoothly
+          const line = bits.join('   ·   ') + '   ·   ';
+          track.textContent = line + line;
+          bar.hidden = false;
+        })
+        .catch(() => {});
 
       fetchData('leaderboards.json').then((d) => {
         if (d.totals) $('st-players').textContent = fmt(d.totals.players);
